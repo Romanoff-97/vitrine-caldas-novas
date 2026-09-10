@@ -7,7 +7,10 @@ import { RouterModule } from '@angular/router';
   selector: 'app-home',
   standalone: true,
   imports: [RouterModule],
-  templateUrl: './home.component.html'
+  templateUrl: './home.component.html',
+  host: {
+    class: 'flex flex-col flex-1 min-h-0'
+  }
 })
 export class HomeComponent implements OnInit {
   feiras: Feira[] = [];

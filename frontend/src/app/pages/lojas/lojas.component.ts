@@ -7,13 +7,16 @@ import { Loja } from '../../models/loja.interface';
   selector: 'app-lojas',
   standalone: true,
   imports: [RouterModule],
-  templateUrl: './lojas.component.html'
+  templateUrl: './lojas.component.html',
+  host: {
+    class: 'flex flex-col flex-1 min-h-0'
+  }
 })
 export class LojasComponent implements OnInit {
   lojas: Loja[] = [];
   lojasFiltradas: Loja[] = [];
   public loading: boolean = true;
-  
+
   private apiService = inject(ApiService);
   private route = inject(ActivatedRoute);
 
@@ -39,8 +42,8 @@ export class LojasComponent implements OnInit {
   // Implementação do RF06 de forma ultrarrápida (pesquisa direto na memória da tela)
   filtrarLojas(evento: Event) {
     const termo = (evento.target as HTMLInputElement).value.toLowerCase();
-    this.lojasFiltradas = this.lojas.filter(loja => 
-      loja.nome.toLowerCase().includes(termo) || 
+    this.lojasFiltradas = this.lojas.filter(loja =>
+      loja.nome.toLowerCase().includes(termo) ||
       loja.categoria.toLowerCase().includes(termo) ||
       loja.descricao.toLowerCase().includes(termo)
     );
