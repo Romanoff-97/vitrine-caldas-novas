@@ -73,4 +73,4 @@ Acesse http://localhost:4200 no navegador (ou a porta que possa ter informado co
 
 👥 Autoria
 
-Desenvolvido por Nathalya Santos Cidreira (RU: 4926608) para a Atividade Extensionista II.
+- Desenvolvido por Nathalya Santos Cidreira (RU: 4926608) para a Atividade Extensionista II.
