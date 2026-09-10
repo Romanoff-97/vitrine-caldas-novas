@@ -1,0 +1,9 @@
+# Ignora pastas e arquivos de dependências e builds
+node_modules/
+dist/
+
+# Ignora variáveis de ambiente (CRÍTICO PARA SEGURANÇA)
+.env
+
+# Arquivos de IDE e sistema operacional
+.vscode/
