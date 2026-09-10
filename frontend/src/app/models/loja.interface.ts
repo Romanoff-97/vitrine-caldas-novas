@@ -6,5 +6,7 @@ export interface Loja {
   categoria: string;
   descricao: string;
   whatsapp: string;
-  feira: string | Feira;
+  imagemUrl?: string;
+  diasFuncionamento?: number[];
+  feira: Feira;
 }

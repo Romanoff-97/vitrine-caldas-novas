@@ -54,4 +54,16 @@ export class LojasComponent implements OnInit {
     const texto = encodeURIComponent(`Olá! Vi a sua loja (${nomeLoja}) na Vitrine Caldas Novas.`);
     window.open(`https://wa.me/55${numLimpo}?text=${texto}`, '_blank');
   }
+
+  isUrlImagem(valor?: string): boolean {
+    if (!valor) return false;
+    return valor.startsWith('http://') || valor.startsWith('https://') || valor.startsWith('/') || valor.startsWith('data:image');
+  }
+
+  formatarDias(dias?: number[]): string {
+    if (!dias || dias.length === 0) return 'Consulte dias';
+    if (dias.length === 7) return 'Todos os dias';
+    const nomes = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    return dias.map(d => nomes[d] ?? '').filter(Boolean).join(', ');
+  }
 }

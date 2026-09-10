@@ -9,7 +9,7 @@ import { Loja } from '../models/loja.interface';
 })
 export class ApiService {
   // A URL onde a api está rodando localmente
-  private apiUrl = 'http://localhost:3000/api'; 
+  private apiUrl = 'http://localhost:3000/api';
 
   constructor(private http: HttpClient) { }
 
@@ -25,5 +25,9 @@ export class ApiService {
 
   buscarLojas(termo: string): Observable<Loja[]> {
     return this.http.get<Loja[]>(`${this.apiUrl}/lojas/buscar?q=${termo}`);
+  }
+
+  getLojaPorId(lojaId: string): Observable<Loja> {
+    return this.http.get<Loja>(`${this.apiUrl}/lojas/${lojaId}`);
   }
 }
