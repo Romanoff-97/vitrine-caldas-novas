@@ -9,4 +9,12 @@ export class FeiraV1Service {
     const feira = new Feira(dados);
     return await feira.save();
   }
+
+  public async buscarPorId(id: string): Promise<IFeira | null> {
+    return await Feira.findById(id);
+  }
+
+  public async atualizarFeira(id: string, dados: Partial<IFeira>): Promise<IFeira | null> {
+    return await Feira.findByIdAndUpdate(id, dados, { new: true });
+  }
 }

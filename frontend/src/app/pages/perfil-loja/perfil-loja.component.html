@@ -21,23 +21,33 @@
 </div>
 } @else {
 <!-- Cabeçalho -->
-<header class="bg-emerald-600 text-white p-4 md:p-6 shadow-md flex items-center gap-3 shrink-0">
-  @if (obterIdFeira(loja.feira)) {
-  <a [routerLink]="['/feira', obterIdFeira(loja.feira)]" aria-label="Voltar para as lojas da feira"
-    class="p-2 bg-emerald-700 rounded-full hover:bg-emerald-800 transition-colors focus:outline-none focus:ring-2 focus:ring-white">
-    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+<header class="bg-emerald-600 text-white p-4 md:p-6 shadow-md flex items-center justify-between shrink-0">
+  <div class="flex items-center gap-3">
+    @if (obterIdFeira(loja.feira)) {
+    <a [routerLink]="['/feira', obterIdFeira(loja.feira)]" aria-label="Voltar para as lojas da feira"
+      class="p-2 bg-emerald-700 rounded-full hover:bg-emerald-800 transition-colors focus:outline-none focus:ring-2 focus:ring-white">
+      <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      </svg>
+    </a>
+    } @else {
+    <a routerLink="/" aria-label="Voltar para a página inicial"
+      class="p-2 bg-emerald-700 rounded-full hover:bg-emerald-800 transition-colors focus:outline-none focus:ring-2 focus:ring-white">
+      <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      </svg>
+    </a>
+    }
+    <h1 class="text-xl md:text-2xl font-bold">Perfil da Loja</h1>
+  </div>
+
+  <a [routerLink]="['/admin/loja', loja._id, 'editar']" aria-label="Editar loja" title="Editar loja"
+    class="p-2 bg-emerald-700 hover:bg-emerald-800 rounded-xl text-white transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-white">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
     </svg>
   </a>
-  } @else {
-  <a routerLink="/" aria-label="Voltar para a página inicial"
-    class="p-2 bg-emerald-700 rounded-full hover:bg-emerald-800 transition-colors focus:outline-none focus:ring-2 focus:ring-white">
-    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-    </svg>
-  </a>
-  }
-  <h1 class="text-xl md:text-2xl font-bold">Perfil da Loja</h1>
 </header>
 
 <!-- Área de rolagem com o conteúdo -->

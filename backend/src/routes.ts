@@ -8,6 +8,8 @@ const lojaController = new LojaV1Controller();
 
 // Rotas de Feiras
 router.get('/feiras', feiraController.listar);
+router.get('/feiras/:id', feiraController.obterPorId);
+router.put('/feiras/:id', feiraController.atualizar);
 router.post('/feiras', feiraController.criar);
 
 // Rotas de Lojas
