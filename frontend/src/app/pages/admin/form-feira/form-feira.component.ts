@@ -124,7 +124,7 @@ export class FormFeiraComponent implements OnInit {
           ? 'Feira atualizada com sucesso!'
           : 'Feira cadastrada com sucesso!';
         setTimeout(() => {
-          this.router.navigate(['/']);
+          this.router.navigate(['/admin']);
         }, 1200);
       },
       error: (err) => {

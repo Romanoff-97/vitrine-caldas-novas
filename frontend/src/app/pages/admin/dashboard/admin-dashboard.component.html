@@ -1,0 +1,267 @@
+<!-- Cabeçalho Administrativo (Tema Dark Navy do Figma) -->
+<header class="bg-[#1E293B] text-white px-5 py-4 flex flex-col gap-3 shadow-md">
+  <div class="flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <div class="w-9 h-9 rounded-xl bg-slate-700/70 border border-slate-600 flex items-center justify-center text-lg" aria-hidden="true">
+        ⚙️
+      </div>
+      <div>
+        <h1 class="text-lg md:text-xl font-bold tracking-tight text-white">Painel Administrativo</h1>
+        <p class="text-xs text-slate-300">Gestão de Feiras e Lojas da Vitrine</p>
+      </div>
+    </div>
+
+    <!-- Link para voltar à Vitrine pública -->
+    <a
+      routerLink="/"
+      class="text-xs font-medium text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 border border-slate-600/80 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all focus:outline-none focus:ring-2 focus:ring-slate-400"
+      aria-label="Voltar para a Vitrine de Feiras"
+    >
+      <span aria-hidden="true">🏪</span>
+      <span class="hidden sm:inline">Ver Vitrine</span>
+    </a>
+  </div>
+
+  <!-- Barra de Ações Rápidas -->
+  <nav class="flex items-center gap-2 pt-1 border-t border-slate-700/60" aria-label="Ações de criação do painel">
+    <a
+      routerLink="/admin/feira/nova"
+      class="flex-1 sm:flex-none text-center bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white font-semibold text-xs py-2 px-3.5 rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+      aria-label="Cadastrar uma nova feira"
+    >
+      <span class="text-sm font-bold" aria-hidden="true">+</span>
+      <span>Nova Feira</span>
+    </a>
+
+    <a
+      routerLink="/admin/loja/nova"
+      class="flex-1 sm:flex-none text-center bg-amber-600 hover:bg-amber-500 active:bg-amber-700 text-white font-semibold text-xs py-2 px-3.5 rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-amber-400"
+      aria-label="Cadastrar uma nova loja"
+    >
+      <span class="text-sm font-bold" aria-hidden="true">+</span>
+      <span>Nova Loja</span>
+    </a>
+  </nav>
+</header>
+
+<!-- Corpo Principal com Rolagem Nativa -->
+<main class="flex-1 overflow-y-auto bg-slate-50 p-4 md:p-5 flex flex-col gap-4">
+
+  <!-- Estado de Carregamento -->
+  @if (carregando) {
+    <div class="py-12 flex flex-col items-center justify-center text-center gap-3" aria-live="polite" aria-busy="true">
+      <div class="w-9 h-9 border-3 border-emerald-600 border-t-transparent rounded-full animate-spin"></div>
+      <p class="text-xs text-slate-500 font-medium">Carregando feiras e lojas...</p>
+    </div>
+  }
+
+  <!-- Mensagem de Erro -->
+  @if (mensagemErro) {
+    <div class="p-4 bg-red-50 border border-red-200 rounded-2xl text-red-800 text-xs flex items-center justify-between gap-2" role="alert">
+      <span>{{ mensagemErro }}</span>
+      <button
+        type="button"
+        (click)="carregarDados()"
+        class="bg-red-600 text-white px-2.5 py-1 rounded-lg text-xs font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
+      >
+        Tentar novamente
+      </button>
+    </div>
+  }
+
+  <!-- Estado Vazio Geral (Sem Feiras Cadastradas) -->
+  @if (!carregando && !mensagemErro && feirasAdmin.length === 0) {
+    <div class="py-12 px-4 text-center flex flex-col items-center justify-center gap-3 bg-white rounded-2xl border border-slate-200 shadow-sm">
+      <div class="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-2xl" aria-hidden="true">
+        🎪
+      </div>
+      <h2 class="text-sm font-bold text-slate-800">Nenhuma feira cadastrada</h2>
+      <p class="text-xs text-slate-500 max-w-xs">Comece cadastrando a primeira feira para poder vincular lojas e feirantes.</p>
+      <a
+        routerLink="/admin/feira/nova"
+        class="mt-1 inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold py-2 px-4 rounded-xl shadow-sm"
+      >
+        + Cadastrar Primeira Feira
+      </a>
+    </div>
+  }
+
+  <!-- Listagem de Feiras com Lojas Agrupadas -->
+  @if (!carregando && feirasAdmin.length > 0) {
+    <div class="flex flex-col gap-4">
+      @for (item of feirasAdmin; track $index) {
+        <article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden transition-all">
+
+          <!-- Cabeçalho do Card da Feira -->
+          <header class="p-3.5 md:p-4 bg-white border-b border-slate-100 flex flex-col gap-2">
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <h2 class="text-sm md:text-base font-bold text-slate-900 truncate">
+                    {{ item.feira.nome }}
+                  </h2>
+
+                  <!-- Badge de Status Ativo/Inativo -->
+                  @if (item.feira.ativo) {
+                    <span class="text-[10px] font-semibold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-md">
+                      Ativa
+                    </span>
+                  } @else {
+                    <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-500 bg-slate-100 border border-slate-200 px-1.5 py-0.5 rounded-md">
+                      Inativa
+                    </span>
+                  }
+                </div>
+
+                <!-- Localização -->
+                <p class="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
+                  <span aria-hidden="true">📍</span>
+                  <span class="truncate">{{ item.feira.localizacao }}</span>
+                </p>
+              </div>
+
+              <!-- Ações da Feira -->
+              <div class="flex items-center gap-1.5 shrink-0">
+                <!-- Botão Editar Feira -->
+                <a
+                  [routerLink]="['/admin/feira', item.feira._id, 'editar']"
+                  class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 rounded-xl border border-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400"
+                  [attr.aria-label]="'Editar dados da feira ' + item.feira.nome"
+                  title="Editar Feira"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-4 h-4" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                  </svg>
+                </a>
+
+                <!-- Botão Recolher/Expandir Lojas -->
+                <button
+                  type="button"
+                  (click)="toggleExpansao(item)"
+                  class="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl border border-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400"
+                  [attr.aria-label]="(item.expandida ? 'Recolher lojas de ' : 'Expandir lojas de ') + item.feira.nome"
+                  [attr.aria-expanded]="item.expandida"
+                  title="Expandir/Recolher Lojas"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    stroke="currentColor"
+                    class="w-4 h-4 transition-transform duration-200"
+                    [class.rotate-180]="item.expandida"
+                    aria-hidden="true"
+                  >
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Dias de Funcionamento e Ação de Adicionar Loja -->
+            <div class="flex items-center justify-between gap-2 pt-1">
+              <div class="flex items-center gap-1.5 text-xs text-slate-600 font-medium">
+                <span aria-hidden="true">📅</span>
+                <span class="text-[11px] text-slate-500">{{ formatarDias(item.feira.diasFuncionamento) }}</span>
+              </div>
+
+              <!-- Ação Rápida: Adicionar Loja a esta Feira -->
+              <a
+                [routerLink]="['/admin/loja/nova']"
+                [queryParams]="{ feiraId: item.feira._id }"
+                class="text-[11px] font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-2 py-1 rounded-lg flex items-center gap-1 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400"
+                [attr.aria-label]="'Adicionar nova loja na feira ' + item.feira.nome"
+              >
+                <span aria-hidden="true">+</span>
+                <span>Adicionar Loja</span>
+              </a>
+            </div>
+          </header>
+
+          <!-- Seção de Lojas Vinculadas à Feira (Expansível) -->
+          @if (item.expandida) {
+            <section class="p-3 md:p-4 bg-slate-50/70" [attr.aria-label]="'Lojas da feira ' + item.feira.nome">
+
+              <!-- Carregamento das Lojas -->
+              @if (item.carregandoLojas) {
+                <div class="py-4 text-center flex items-center justify-center gap-2 text-xs text-slate-400" aria-busy="true">
+                  <div class="w-4 h-4 border-2 border-slate-400 border-t-transparent rounded-full animate-spin"></div>
+                  <span>Buscando lojas...</span>
+                </div>
+              }
+
+              <!-- Estado Vazio de Lojas nesta Feira -->
+              @if (!item.carregandoLojas && item.lojas.length === 0) {
+                <div class="py-4 px-3 bg-white border border-dashed border-slate-200 rounded-xl text-center flex flex-col items-center justify-center gap-2">
+                  <p class="text-xs text-slate-500">Nenhuma loja cadastrada nesta feira ainda.</p>
+                  <a
+                    [routerLink]="['/admin/loja/nova']"
+                    [queryParams]="{ feiraId: item.feira._id }"
+                    class="text-xs font-semibold text-emerald-700 hover:text-emerald-800 underline underline-offset-2"
+                  >
+                    + Cadastrar a primeira loja
+                  </a>
+                </div>
+              }
+
+              <!-- Lista das Lojas -->
+              @if (!item.carregandoLojas && item.lojas.length > 0) {
+                <div class="flex flex-col gap-2">
+                  <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 px-1">
+                    Lojas cadastradas ({{ item.lojas.length }})
+                  </p>
+
+                  @for (loja of item.lojas; track $index) {
+                    <div class="p-2.5 bg-white border border-slate-200/90 rounded-xl flex items-center justify-between gap-3 shadow-xs hover:border-slate-300 transition-all">
+
+                      <!-- Informações da Loja -->
+                      <div class="flex items-center gap-2.5 min-w-0">
+                        <!-- Imagem / Emoji Avatar -->
+                        <div class="w-9 h-9 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center overflow-hidden shrink-0">
+                          @if (isUrlValida(loja.imagemUrl)) {
+                            <img [src]="loja.imagemUrl" [alt]="loja.nome" class="w-full h-full object-cover" />
+                          } @else if (loja.imagemUrl) {
+                            <span class="text-base" aria-hidden="true">{{ loja.imagemUrl }}</span>
+                          } @else {
+                            <span class="text-base" aria-hidden="true">🛍️</span>
+                          }
+                        </div>
+
+                        <!-- Nome e Categoria -->
+                        <div class="min-w-0">
+                          <h3 class="text-xs font-bold text-slate-800 truncate">
+                            {{ loja.nome }}
+                          </h3>
+                          <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="text-[11px] text-slate-500 truncate">{{ loja.categoria }}</span>
+                            <span class="text-slate-300 text-xs" aria-hidden="true">•</span>
+                            <span class="text-[10px] text-emerald-700 font-medium">
+                              {{ formatarDias(loja.diasFuncionamento) }}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Botão Editar Loja -->
+                      <a
+                        [routerLink]="['/admin/loja', loja._id, 'editar']"
+                        class="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 rounded-lg border border-slate-200 transition-colors shrink-0 focus:outline-none focus:ring-2 focus:ring-slate-400"
+                        [attr.aria-label]="'Editar loja ' + loja.nome"
+                        title="Editar Loja"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor" class="w-3.5 h-3.5" aria-hidden="true">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
+                        </svg>
+                      </a>
+                    </div>
+                  }
+                </div>
+              }
+            </section>
+          }
+        </article>
+      }
+    </div>
+  }
+</main>

@@ -70,6 +70,11 @@ export class FormLojaComponent implements OnInit {
         if (this.isEdicao && this.lojaId) {
           this.carregarLoja(this.lojaId);
         } else {
+          const feiraQuery = this.route.snapshot.queryParamMap.get('feiraId');
+          if (feiraQuery && this.feiras.some(f => f._id === feiraQuery)) {
+            this.form.patchValue({ feira: feiraQuery });
+            this.onFeiraChange(feiraQuery);
+          }
           this.carregando = false;
         }
       },
@@ -201,9 +206,8 @@ export class FormLojaComponent implements OnInit {
           ? 'Loja atualizada com sucesso!'
           : 'Loja cadastrada com sucesso!';
 
-        const feiraDestino = typeof lojaSalva.feira === 'object' ? lojaSalva.feira._id : lojaSalva.feira;
         setTimeout(() => {
-          this.router.navigate(['/feira', feiraDestino]);
+          this.router.navigate(['/admin']);
         }, 1200);
       },
       error: (err) => {
