@@ -9,8 +9,8 @@ import { Loja } from '../models/loja.interface';
 })
 export class ApiService {
   // A URL onde a api está rodando localmente
-  private apiUrl = 'http://localhost:3000/api';
-  // private apiUrl = 'https://vitrine-cn-backend.onrender.com/api';
+  // private apiUrl = 'http://localhost:3000/api';
+  private apiUrl = 'https://vitrine-cn-backend.onrender.com/api';
 
   constructor(private http: HttpClient) { }
 
