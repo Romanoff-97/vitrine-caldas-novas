@@ -1,7 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
+import { AdminAuthService } from '../../../services/admin-auth.service';
 import { Feira } from '../../../models/feira.interface';
 import { Loja } from '../../../models/loja.interface';
 
@@ -23,6 +24,8 @@ export interface FeiraItemAdmin {
 })
 export class AdminDashboardComponent implements OnInit {
   private apiService = inject(ApiService);
+  private authService = inject(AdminAuthService);
+  private router = inject(Router);
 
   carregando: boolean = false;
   mensagemErro: string | null = null;
@@ -88,5 +91,10 @@ export class AdminDashboardComponent implements OnInit {
   isUrlValida(url?: string): boolean {
     if (!url) return false;
     return url.startsWith('http://') || url.startsWith('https://');
+  }
+
+  sair(): void {
+    this.authService.logout();
+    this.router.navigate(['/']);
   }
 }

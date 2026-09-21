@@ -11,15 +11,29 @@
       </div>
     </div>
 
-    <!-- Link para voltar à Vitrine pública -->
-    <a
-      routerLink="/"
-      class="text-xs font-medium text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 border border-slate-600/80 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all focus:outline-none focus:ring-2 focus:ring-slate-400"
-      aria-label="Voltar para a Vitrine de Feiras"
-    >
-      <span aria-hidden="true">🏪</span>
-      <span class="hidden sm:inline">Ver Vitrine</span>
-    </a>
+    <div class="flex items-center gap-2">
+      <!-- Link para voltar à Vitrine pública -->
+      <a
+        routerLink="/"
+        class="text-xs font-medium text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-700/80 border border-slate-600/80 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all focus:outline-none focus:ring-2 focus:ring-slate-400"
+        aria-label="Voltar para a Vitrine de Feiras"
+      >
+        <span aria-hidden="true">🏪</span>
+        <span class="hidden sm:inline">Ver Vitrine</span>
+      </a>
+
+      <!-- Botão Sair da Sessão -->
+      <button
+        type="button"
+        (click)="sair()"
+        class="text-xs font-medium text-red-300 hover:text-red-100 bg-red-950/40 hover:bg-red-900/60 border border-red-800/60 px-2.5 py-1.5 rounded-lg flex items-center gap-1 transition-all focus:outline-none focus:ring-2 focus:ring-red-400"
+        aria-label="Encerrar sessão administrativa"
+        title="Sair da Área Administrativa"
+      >
+        <span aria-hidden="true">🚪</span>
+        <span class="hidden sm:inline">Sair</span>
+      </button>
+    </div>
   </div>
 
   <!-- Barra de Ações Rápidas -->
