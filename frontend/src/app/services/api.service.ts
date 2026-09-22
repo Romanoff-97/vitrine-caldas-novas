@@ -1,18 +1,35 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Feira } from '../models/feira.interface';
 import { Loja } from '../models/loja.interface';
 import { API } from '../utils/api';
+import { AdminAuthService } from './admin-auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
+  private http = inject(HttpClient);
+  private adminAuthService = inject(AdminAuthService);
+
   // A URL da API
   private apiUrl = API;
 
-  constructor(private http: HttpClient) { }
+  /**
+   * Constrói os cabeçalhos de autenticação para operações protegidas.
+   * Inclui tanto 'x-api-key' quanto 'x-admin-key' para máxima interoperabilidade.
+   */
+  private obterHeadersAutenticados(): HttpHeaders {
+    const chave = this.adminAuthService.getChave();
+    if (chave) {
+      return new HttpHeaders({
+        'x-api-key': chave,
+        'x-admin-key': chave
+      });
+    }
+    return new HttpHeaders();
+  }
 
   // === FEIRAS ===
   getFeiras(): Observable<Feira[]> {
@@ -24,11 +41,15 @@ export class ApiService {
   }
 
   criarFeira(dados: Partial<Feira>): Observable<Feira> {
-    return this.http.post<Feira>(`${this.apiUrl}/feiras`, dados);
+    return this.http.post<Feira>(`${this.apiUrl}/feiras`, dados, {
+      headers: this.obterHeadersAutenticados()
+    });
   }
 
   atualizarFeira(id: string, dados: Partial<Feira>): Observable<Feira> {
-    return this.http.put<Feira>(`${this.apiUrl}/feiras/${id}`, dados);
+    return this.http.put<Feira>(`${this.apiUrl}/feiras/${id}`, dados, {
+      headers: this.obterHeadersAutenticados()
+    });
   }
 
   // === LOJAS ===
@@ -45,10 +66,14 @@ export class ApiService {
   }
 
   criarLoja(dados: Partial<Loja>): Observable<Loja> {
-    return this.http.post<Loja>(`${this.apiUrl}/lojas`, dados);
+    return this.http.post<Loja>(`${this.apiUrl}/lojas`, dados, {
+      headers: this.obterHeadersAutenticados()
+    });
   }
 
   atualizarLoja(id: string, dados: Partial<Loja>): Observable<Loja> {
-    return this.http.put<Loja>(`${this.apiUrl}/lojas/${id}`, dados);
+    return this.http.put<Loja>(`${this.apiUrl}/lojas/${id}`, dados, {
+      headers: this.obterHeadersAutenticados()
+    });
   }
 }

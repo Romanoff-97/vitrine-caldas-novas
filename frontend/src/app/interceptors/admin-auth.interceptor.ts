@@ -4,7 +4,8 @@ import { AdminAuthService } from '../services/admin-auth.service';
 
 /**
  * Interceptor funcional do Angular 18 que anexa automaticamente
- * o header 'x-admin-key' nas requisições quando houver sessão ativa.
+ * os headers de autenticação ('x-api-key' e 'x-admin-key') nas requisições
+ * quando houver sessão ativa no painel administrativo.
  */
 export const adminAuthInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AdminAuthService);
@@ -13,6 +14,7 @@ export const adminAuthInterceptor: HttpInterceptorFn = (req, next) => {
   if (chave) {
     const reqClonada = req.clone({
       setHeaders: {
+        'x-api-key': chave,
         'x-admin-key': chave
       }
     });
@@ -21,3 +23,4 @@ export const adminAuthInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req);
 };
+
