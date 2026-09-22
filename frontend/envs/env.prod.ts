@@ -1,0 +1,1 @@
+export const API_URL = "https://vitrine-cn-backend.onrender.com/api";

@@ -3,14 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Feira } from '../models/feira.interface';
 import { Loja } from '../models/loja.interface';
+import { API } from '../utils/api';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  // A URL onde a api está rodando localmente
-  // private apiUrl = 'http://localhost:3000/api';
-  private apiUrl = 'https://vitrine-cn-backend.onrender.com/api';
+  // A URL da API
+  private apiUrl = API;
 
   constructor(private http: HttpClient) { }
 

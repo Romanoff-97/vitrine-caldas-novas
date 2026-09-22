@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { API } from '../utils/api';
 
 export interface RespostaVerificacaoAdmin {
   valido: boolean;
@@ -14,7 +15,7 @@ export interface RespostaVerificacaoAdmin {
 export class AdminAuthService {
   private http = inject(HttpClient);
   private readonly STORAGE_KEY = 'vitrine_admin_key';
-  private apiUrl = 'http://localhost:3000/api';
+  private apiUrl = API;
 
   getChave(): string | null {
     if (typeof window !== 'undefined' && window.sessionStorage) {
