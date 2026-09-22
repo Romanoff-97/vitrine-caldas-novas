@@ -27,7 +27,8 @@ const configuracaoCors: CorsOptions = {
       callback(new Error(`Acesso bloqueado pela política de CORS: origem '${origin}' não autorizada.`));
     }
   },
-  allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-key', 'x-api-key'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-key'],
+
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   credentials: true
 };

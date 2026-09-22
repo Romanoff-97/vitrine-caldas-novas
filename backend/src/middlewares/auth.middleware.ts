@@ -25,24 +25,24 @@ export function compararChavesComSeguranca(chaveRecebida: string, chaveEsperada:
 
 /**
  * Recupera a chave administrativa configurada nas variáveis de ambiente.
- * Suporta ADMIN_API_KEY ou ADMIN_KEY com fallback para 'admin123' em desenvolvimento.
+ * Utiliza exclusivamente ADMIN_KEY com fallback para 'admin123' em desenvolvimento.
  */
 export function obterChaveAdministrativaEsperada(): string {
-  return process.env.ADMIN_API_KEY || process.env.ADMIN_KEY || 'admin123';
+  return process.env.ADMIN_KEY!;
 }
 
 /**
  * Middleware Express para autenticação de requisições em rotas protegidas.
- * Aceita o token de autenticação através do header 'x-api-key' ou 'x-admin-key'.
+ * Valida o header 'x-admin-key' contra a chave administrativa configurada (ADMIN_KEY).
  * Retorna status 401 (Unauthorized) caso ausente ou incorreto.
  */
 export function authMiddleware(req: Request, res: Response, next: NextFunction): void {
   const chaveEsperada = obterChaveAdministrativaEsperada();
-  const headerKey = req.headers['x-api-key'] || req.headers['x-admin-key'];
+  const headerKey = req.headers['x-admin-key'];
 
   if (!headerKey || typeof headerKey !== 'string') {
     const respostaErro: ErroAutenticacaoResponse = {
-      erro: 'Acesso não autorizado. Chave de API (x-api-key ou x-admin-key) ausente ou inválida.'
+      erro: 'Acesso não autorizado. Chave administrativa (x-admin-key) ausente ou inválida.'
     };
     res.status(401).json(respostaErro);
     return;
@@ -52,7 +52,7 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction):
 
   if (!ehValida) {
     const respostaErro: ErroAutenticacaoResponse = {
-      erro: 'Acesso não autorizado. Chave de autenticação incorreta.'
+      erro: 'Acesso não autorizado. Chave administrativa incorreta.'
     };
     res.status(401).json(respostaErro);
     return;
@@ -62,6 +62,7 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction):
 }
 
 /**
- * Alias para compatibilidade com implementações existentes.
+ * Alias para compatibilidade com importações legadas.
  */
 export const adminAuthMiddleware = authMiddleware;
+

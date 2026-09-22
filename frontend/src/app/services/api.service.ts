@@ -18,18 +18,18 @@ export class ApiService {
 
   /**
    * Constrói os cabeçalhos de autenticação para operações protegidas.
-   * Inclui tanto 'x-api-key' quanto 'x-admin-key' para máxima interoperabilidade.
+   * Utiliza exclusivamente o padrão 'x-admin-key'.
    */
   private obterHeadersAutenticados(): HttpHeaders {
     const chave = this.adminAuthService.getChave();
     if (chave) {
       return new HttpHeaders({
-        'x-api-key': chave,
         'x-admin-key': chave
       });
     }
     return new HttpHeaders();
   }
+
 
   // === FEIRAS ===
   getFeiras(): Observable<Feira[]> {

@@ -13,16 +13,17 @@ const lojaController = new LojaV1Controller();
 
 /**
  * Endpoint para validação prévia de chave administrativa.
- * Suporta x-api-key, x-admin-key ou chave no corpo da requisição.
+ * Suporta header x-admin-key ou chave no corpo da requisição.
  */
 router.post('/admin/verificar-chave', (req: Request, res: Response): void => {
   const chaveEsperada = obterChaveAdministrativaEsperada();
-  const providedKey = (req.headers['x-api-key'] || req.headers['x-admin-key'] || req.body?.chave) as string | undefined;
+  const providedKey = (req.headers['x-admin-key'] || req.body?.chave) as string | undefined;
 
   if (providedKey && typeof providedKey === 'string' && compararChavesComSeguranca(providedKey, chaveEsperada)) {
     res.status(200).json({ valido: true, mensagem: 'Chave administrativa autenticada com sucesso.' });
     return;
   }
+
 
   res.status(401).json({ valido: false, erro: 'Chave administrativa incorreta ou não fornecida.' });
 });
