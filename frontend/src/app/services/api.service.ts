@@ -65,13 +65,13 @@ export class ApiService {
     return this.http.get<Loja>(`${this.apiUrl}/lojas/${lojaId}`);
   }
 
-  criarLoja(dados: Partial<Loja>): Observable<Loja> {
+  criarLoja(dados: FormData | Partial<Loja>): Observable<Loja> {
     return this.http.post<Loja>(`${this.apiUrl}/lojas`, dados, {
       headers: this.obterHeadersAutenticados()
     });
   }
 
-  atualizarLoja(id: string, dados: Partial<Loja>): Observable<Loja> {
+  atualizarLoja(id: string, dados: FormData | Partial<Loja>): Observable<Loja> {
     return this.http.put<Loja>(`${this.apiUrl}/lojas/${id}`, dados, {
       headers: this.obterHeadersAutenticados()
     });

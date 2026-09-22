@@ -32,6 +32,9 @@ export class FormLojaComponent implements OnInit {
   mensagemErro: string | null = null;
   mensagemSucesso: string | null = null;
 
+  fotoFile: File | null = null;
+  fotoPreview: string | null = null;
+
   feiras: Feira[] = [];
   feiraSelecionada: Feira | null = null;
 
@@ -99,6 +102,10 @@ export class FormLojaComponent implements OnInit {
           imagemUrl: loja.imagemUrl ?? '',
           diasFuncionamento: loja.diasFuncionamento ?? []
         });
+
+        if (loja.imagemUrl) {
+          this.fotoPreview = loja.imagemUrl;
+        }
 
         this.onFeiraChange(feiraId);
         this.carregando = false;
@@ -171,6 +178,31 @@ export class FormLojaComponent implements OnInit {
     this.form.controls.whatsapp.setValue(input.value);
   }
 
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      this.fotoFile = file;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.fotoPreview = reader.result as string;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  removerFoto(): void {
+    this.fotoFile = null;
+    this.fotoPreview = null;
+    this.form.controls.imagemUrl.setValue('');
+  }
+
+  get fotoTamanhoFormatado(): string {
+    if (!this.fotoFile) return '';
+    return `${Math.round(this.fotoFile.size / 1024)} KB`;
+  }
+
   salvar(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -185,22 +217,26 @@ export class FormLojaComponent implements OnInit {
       ? this.form.value.diasFuncionamento
       : (this.feiraSelecionada?.diasFuncionamento ?? []);
 
-    const payload: Partial<Loja> = {
-      feira: (this.form.value.feira! as any),
-      nome: this.form.value.nome!.trim(),
-      categoria: this.form.value.categoria!.trim(),
-      descricao: this.form.value.descricao!.trim(),
-      whatsapp: this.form.value.whatsapp!.trim(),
-      imagemUrl: this.form.value.imagemUrl?.trim() || undefined,
-      diasFuncionamento: dias
-    };
+    const formData = new FormData();
+    formData.append('feira', this.form.value.feira!);
+    formData.append('nome', this.form.value.nome!.trim());
+    formData.append('categoria', this.form.value.categoria!.trim());
+    formData.append('descricao', this.form.value.descricao!.trim());
+    formData.append('whatsapp', this.form.value.whatsapp!.trim());
+    formData.append('diasFuncionamento', JSON.stringify(dias));
+
+    if (this.fotoFile) {
+      formData.append('imagem', this.fotoFile);
+    } else if (this.form.value.imagemUrl) {
+      formData.append('imagemUrl', this.form.value.imagemUrl);
+    }
 
     const operacao$ = this.isEdicao && this.lojaId
-      ? this.apiService.atualizarLoja(this.lojaId, payload)
-      : this.apiService.criarLoja(payload);
+      ? this.apiService.atualizarLoja(this.lojaId, formData)
+      : this.apiService.criarLoja(formData);
 
     operacao$.subscribe({
-      next: (lojaSalva) => {
+      next: (_lojaSalva) => {
         this.salvando = false;
         this.mensagemSucesso = this.isEdicao
           ? 'Loja atualizada com sucesso!'

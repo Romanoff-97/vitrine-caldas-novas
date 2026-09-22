@@ -29,9 +29,32 @@ export class LojaV1Controller {
     }
   };
 
+  private extrairDadosLoja(req: Request): Record<string, unknown> {
+    const imagemUrl = req.file ? req.file.path : req.body?.imagemUrl;
+
+    let diasFuncionamento = req.body?.diasFuncionamento;
+    if (typeof diasFuncionamento === 'string') {
+      try {
+        diasFuncionamento = JSON.parse(diasFuncionamento);
+      } catch {
+        diasFuncionamento = diasFuncionamento
+          .split(',')
+          .map((d: string) => Number(d.trim()))
+          .filter((n: number) => !isNaN(n));
+      }
+    }
+
+    return {
+      ...req.body,
+      ...(imagemUrl ? { imagemUrl } : {}),
+      ...(diasFuncionamento !== undefined ? { diasFuncionamento } : {})
+    };
+  }
+
   public criar = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const novaLoja = await this.lojaService.criarLoja(req.body);
+      const dados = this.extrairDadosLoja(req);
+      const novaLoja = await this.lojaService.criarLoja(dados);
       return res.status(201).json(novaLoja);
     } catch (error: any) {
       return res.status(400).json({ erro: error.message });
@@ -54,7 +77,8 @@ export class LojaV1Controller {
   public atualizar = async (req: Request, res: Response): Promise<Response> => {
     try {
       const { id } = req.params as unknown as { id: string };
-      const lojaAtualizada = await this.lojaService.atualizarLoja(id, req.body);
+      const dados = this.extrairDadosLoja(req);
+      const lojaAtualizada = await this.lojaService.atualizarLoja(id, dados);
       if (!lojaAtualizada) {
         return res.status(404).json({ erro: 'Loja não encontrada' });
       }

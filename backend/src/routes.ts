@@ -6,6 +6,7 @@ import {
   compararChavesComSeguranca,
   obterChaveAdministrativaEsperada
 } from './middlewares/auth.middleware';
+import { upload } from './config/upload';
 
 const router = Router();
 const feiraController = new FeiraV1Controller();
@@ -34,11 +35,11 @@ router.get('/feiras/:id', feiraController.obterPorId);
 router.put('/feiras/:id', authMiddleware, feiraController.atualizar);
 router.post('/feiras', authMiddleware, feiraController.criar);
 
-// Rotas de Lojas (GET público, POST/PUT protegidos)
+// Rotas de Lojas (GET público, POST/PUT protegidos com upload de imagem)
 router.get('/lojas/feira/:feiraId', lojaController.listarPorFeira);
 router.get('/lojas/buscar', lojaController.buscar); // RF06
 router.get('/lojas/:id', lojaController.obterPorId);
-router.put('/lojas/:id', authMiddleware, lojaController.atualizar);
-router.post('/lojas', authMiddleware, lojaController.criar);
+router.put('/lojas/:id', authMiddleware, upload.single('imagem'), lojaController.atualizar);
+router.post('/lojas', authMiddleware, upload.single('imagem'), lojaController.criar);
 
 export default router;
