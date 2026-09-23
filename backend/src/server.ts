@@ -14,7 +14,7 @@ const app = express();
  * Bloqueia acessos não autorizados via navegador (CORS restrito).
  */
 const ORIGENS_PERMITIDAS: readonly string[] = [
-  'https://vitrine-cn-frontend.vercel.app',
+  'https://vitrine-cn.vercel.app',
   'http://localhost:4200'
 ];
 
