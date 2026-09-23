@@ -13,6 +13,7 @@ const app = express();
  */
 const ORIGENS_PERMITIDAS: readonly string[] = [
   'https://vitrine-cn.vercel.app',
+  'https://vitrinecn.pedehub.com.br',
   'http://localhost:4200'
 ];
 
