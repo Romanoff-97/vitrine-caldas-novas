@@ -1,3 +1,3 @@
 import { API_URL } from "../../../envs/env.demo";
 
-export const API = API_URL
+export const API: string = API_URL;
