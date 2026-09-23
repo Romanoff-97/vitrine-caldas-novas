@@ -134,4 +134,8 @@ export class FormFeiraComponent implements OnInit {
       }
     });
   }
+
+  voltarParaPaginaAnterior() {
+    this.router.navigate(['/admin']);
+  }
 }

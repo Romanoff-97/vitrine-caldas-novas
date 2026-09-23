@@ -253,4 +253,8 @@ export class FormLojaComponent implements OnInit {
       }
     });
   }
+
+  voltarParaPaginaAnterior() {
+    this.router.navigate(['/admin']);
+  }
 }
