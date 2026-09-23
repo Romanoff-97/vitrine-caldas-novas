@@ -1,11 +1,9 @@
-import express, { Request, Response } from 'express';
+import 'dotenv/config';
+import express from 'express';
 import cors, { CorsOptions } from 'cors';
-import dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
 import { connectDatabase } from './database';
 import routes from './routes';
-
-dotenv.config();
 
 const app = express();
 

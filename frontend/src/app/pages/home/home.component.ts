@@ -21,7 +21,6 @@ export class HomeComponent implements OnInit {
     this.apiService.getFeiras().subscribe({
       next: (dados) => {
         this.feiras = dados.filter(x => x.ativo);
-        console.log(dados)
       },
       error: (err) => {
         console.error('Erro ao buscar feiras', err);

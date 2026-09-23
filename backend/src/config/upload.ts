@@ -1,9 +1,12 @@
+import dotenv from 'dotenv';
 import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import multer from 'multer';
 
-// O SDK pega automaticamente a CLOUDINARY_URL do process.env
-cloudinary.config();
+dotenv.config();
+
+// Força o SDK a ler/recarregar a CLOUDINARY_URL do process.env
+cloudinary.config(true);
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
