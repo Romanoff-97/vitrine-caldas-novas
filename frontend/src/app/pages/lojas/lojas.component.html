@@ -1,16 +1,53 @@
-<header class="bg-emerald-600 text-white p-4 md:p-6 shadow-md flex flex-col gap-4">
-  <div class="flex items-center justify-between">
-    <div class="flex items-center gap-3">
+<header class="bg-emerald-600 text-white p-4 md:p-6 shadow-md flex flex-col gap-3.5">
+  <div class="flex items-center justify-between gap-3">
+    <div class="flex items-center gap-3 min-w-0">
       <a routerLink="/" aria-label="Voltar para a página inicial"
-        class="p-2 bg-emerald-700 rounded-full hover:bg-emerald-800 transition-colors">
+        class="p-2 bg-emerald-700/80 hover:bg-emerald-800 rounded-full transition-colors shrink-0 focus:outline-none focus:ring-2 focus:ring-emerald-300">
         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18">
           </path>
         </svg>
       </a>
-      <h1 class="text-xl md:text-2xl font-bold">Lojas da Feira</h1>
+      <div class="min-w-0">
+        <h1 class="text-lg md:text-xl font-bold truncate leading-tight">
+          {{ feira ? feira.nome : 'Lojas da Feira' }}
+        </h1>
+        <p class="text-xs text-emerald-100 font-medium">Lojas participantes</p>
+      </div>
+    </div>
+
+    <!-- Botão de Pin do Maps (Local destacado no mockup) -->
+    @if (feira?.mapsUrl) {
+    <a [href]="feira!.mapsUrl" target="_blank" rel="noopener noreferrer"
+      class="flex items-center gap-1.5 px-3 py-2 bg-emerald-700/90 hover:bg-emerald-800 active:bg-emerald-900 text-white rounded-xl text-xs font-semibold shadow-sm transition-all border border-emerald-500/60 hover:border-emerald-300 shrink-0 focus:outline-none focus:ring-2 focus:ring-white/80"
+      aria-label="Abrir rota para a feira no Google Maps" title="Como chegar no Google Maps">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-200" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+      </svg>
+      <span class="text-xs font-bold">Como chegar</span>
+    </a>
+    }
+  </div>
+
+  <!-- Detalhes da Feira (Localização e Dias de Funcionamento) -->
+  @if (feira) {
+  <div
+    class="bg-emerald-700/50 border border-emerald-500/40 rounded-xl px-3.5 py-2.5 flex items-center justify-between gap-2 text-xs text-emerald-50 flex-wrap">
+    <div class="flex items-center gap-1.5 min-w-0">
+      <span aria-hidden="true">📍</span>
+      <span class="font-medium truncate">{{ feira.localizacao }}</span>
+    </div>
+
+    <div
+      class="flex items-center gap-1.5 font-semibold text-emerald-100 shrink-0 bg-emerald-800/40 px-2 py-0.5 rounded-lg border border-emerald-600/50">
+      <span aria-hidden="true">📅</span>
+      <span>{{ formatarDias(feira.diasFuncionamento) }}</span>
     </div>
   </div>
+  }
 
   <!-- Barra de Busca (RF06) -->
   <div class="relative">

@@ -3,5 +3,6 @@ export interface Feira {
   nome: string;
   diasFuncionamento: number[];
   localizacao: string;
+  mapsUrl?: string;
   ativo: boolean;
 }

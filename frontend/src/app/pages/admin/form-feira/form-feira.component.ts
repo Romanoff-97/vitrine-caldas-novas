@@ -44,6 +44,7 @@ export class FormFeiraComponent implements OnInit {
   form = this.fb.group({
     nome: ['', [Validators.required, Validators.minLength(3)]],
     localizacao: ['', [Validators.required, Validators.minLength(3)]],
+    mapsUrl: [''],
     diasFuncionamento: this.fb.control<number[]>([], [Validators.required, Validators.minLength(1)]),
     ativo: [true, [Validators.required]]
   });
@@ -65,6 +66,7 @@ export class FormFeiraComponent implements OnInit {
         this.form.patchValue({
           nome: feira.nome,
           localizacao: feira.localizacao,
+          mapsUrl: feira.mapsUrl ?? '',
           diasFuncionamento: feira.diasFuncionamento ?? [],
           ativo: feira.ativo ?? true
         });
@@ -144,6 +146,7 @@ export class FormFeiraComponent implements OnInit {
     const payload: Partial<Feira> = {
       nome: this.form.value.nome!.trim(),
       localizacao: this.form.value.localizacao!.trim(),
+      mapsUrl: this.form.value.mapsUrl?.trim() || undefined,
       diasFuncionamento: this.form.value.diasFuncionamento!,
       ativo: Boolean(this.form.value.ativo)
     };

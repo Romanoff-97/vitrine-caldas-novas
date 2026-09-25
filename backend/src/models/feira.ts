@@ -5,6 +5,7 @@ export interface IFeira extends Document {
   nome: string;
   diasFuncionamento: number[];
   localizacao: string;
+  mapsUrl?: string;
   ativo: boolean;
 }
 
@@ -15,6 +16,7 @@ const FeiraSchema: Schema = new Schema(
     // Array de números representando os dias da semana (0=Dom a 6=Sáb)
     diasFuncionamento: { type: [Number], required: true },
     localizacao: { type: String, required: true },
+    mapsUrl: { type: String, required: false },
     ativo: { type: Boolean, default: true }
   },
   {

@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { Loja } from '../../models/loja.interface';
+import { Feira } from '../../models/feira.interface';
 
 @Component({
   selector: 'app-lojas',
@@ -13,6 +14,7 @@ import { Loja } from '../../models/loja.interface';
   }
 })
 export class LojasComponent implements OnInit {
+  feira: Feira | null = null;
   lojas: Loja[] = [];
   lojasFiltradas: Loja[] = [];
   public loading: boolean = true;
@@ -23,6 +25,17 @@ export class LojasComponent implements OnInit {
   ngOnInit() {
     const feiraId = this.route.snapshot.paramMap.get('id');
     if (feiraId) {
+      // Carrega informações da feira
+      this.apiService.getFeiraPorId(feiraId).subscribe({
+        next: (dadosFeira: Feira) => {
+          this.feira = dadosFeira;
+        },
+        error: (err) => {
+          console.error('Erro ao buscar dados da feira', err);
+        }
+      });
+
+      // Carrega lojas da feira
       this.apiService.getLojasPorFeira(feiraId).subscribe({
         next: (dados) => {
           this.lojas = dados;
