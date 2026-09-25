@@ -2,7 +2,7 @@
 
 Plataforma desenvolvida como **Produto Mínimo Viável (MVP)** para a Atividade Extensionista do curso de Análise e Desenvolvimento de Sistemas (UNINTER).
 
-O projeto visa solucionar a barreira da inclusão digital para pequenos feirantes e artesãos (com foco inicial na "Feira Rua da Feira" em Caldas Novas - GO). O sistema atua como uma vitrine virtual de baixo atrito, conectando clientes diretamente ao WhatsApp do comerciante, sem a necessidade de cadastros complexos ou taxas de e-commerce.
+O projeto visa solucionar a barreira da inclusão digital para pequenos feirantes e artesãos (com foco inicial na "Feira Livre de Caldas Nova - Rua da Feira" em Caldas Novas - GO). O sistema atua como uma vitrine virtual de baixo atrito, conectando clientes diretamente ao WhatsApp do comerciante, sem a necessidade de cadastros complexos ou taxas de e-commerce.
 
 ## 🎯 Objetivos de Desenvolvimento Sustentável (ODS)
 
