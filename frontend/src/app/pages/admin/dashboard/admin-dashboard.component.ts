@@ -13,6 +13,15 @@ export interface FeiraItemAdmin {
   expandida: boolean;
 }
 
+export interface ItemExclusaoAdmin {
+  tipo: 'feira' | 'loja';
+  id: string;
+  nome: string;
+  feiraId?: string;
+  feiraNome?: string;
+  qtdLojas?: number;
+}
+
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
@@ -29,7 +38,11 @@ export class AdminDashboardComponent implements OnInit {
 
   carregando: boolean = false;
   mensagemErro: string | null = null;
+  mensagemSucesso: string | null = null;
   feirasAdmin: FeiraItemAdmin[] = [];
+
+  itemExclusao: ItemExclusaoAdmin | null = null;
+  excluindo: boolean = false;
 
   readonly nomesDias: string[] = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
@@ -76,6 +89,90 @@ export class AdminDashboardComponent implements OnInit {
         item.carregandoLojas = false;
       }
     });
+  }
+
+  abrirModalExcluirFeira(item: FeiraItemAdmin): void {
+    this.mensagemErro = null;
+    this.itemExclusao = {
+      tipo: 'feira',
+      id: item.feira._id,
+      nome: item.feira.nome,
+      qtdLojas: item.lojas.length
+    };
+  }
+
+  abrirModalExcluirLoja(loja: Loja, feira: Feira): void {
+    this.mensagemErro = null;
+    this.itemExclusao = {
+      tipo: 'loja',
+      id: loja._id,
+      nome: loja.nome,
+      feiraId: feira._id,
+      feiraNome: feira.nome
+    };
+  }
+
+  fecharModalExclusao(): void {
+    if (this.excluindo) return;
+    this.itemExclusao = null;
+  }
+
+  confirmarExclusao(): void {
+    if (!this.itemExclusao || this.excluindo) return;
+
+    this.excluindo = true;
+    this.mensagemErro = null;
+    this.mensagemSucesso = null;
+
+    if (this.itemExclusao.tipo === 'feira') {
+      const feiraId = this.itemExclusao.id;
+      const feiraNome = this.itemExclusao.nome;
+
+      this.apiService.excluirFeira(feiraId).subscribe({
+        next: () => {
+          this.feirasAdmin = this.feirasAdmin.filter(f => f.feira._id !== feiraId);
+          this.excluindo = false;
+          this.itemExclusao = null;
+          this.mensagemSucesso = `A feira "${feiraNome}" e suas lojas vinculadas foram excluídas com sucesso.`;
+          this.limparMensagemAposTempo();
+        },
+        error: (err) => {
+          console.error('Erro ao excluir feira', err);
+          this.excluindo = false;
+          this.mensagemErro = err?.error?.erro || 'Não foi possível excluir a feira. Tente novamente.';
+        }
+      });
+    } else {
+      const lojaId = this.itemExclusao.id;
+      const lojaNome = this.itemExclusao.nome;
+      const feiraId = this.itemExclusao.feiraId;
+
+      this.apiService.excluirLoja(lojaId).subscribe({
+        next: () => {
+          if (feiraId) {
+            const itemFeira = this.feirasAdmin.find(f => f.feira._id === feiraId);
+            if (itemFeira) {
+              itemFeira.lojas = itemFeira.lojas.filter(l => l._id !== lojaId);
+            }
+          }
+          this.excluindo = false;
+          this.itemExclusao = null;
+          this.mensagemSucesso = `A loja "${lojaNome}" foi excluída com sucesso.`;
+          this.limparMensagemAposTempo();
+        },
+        error: (err) => {
+          console.error('Erro ao excluir loja', err);
+          this.excluindo = false;
+          this.mensagemErro = err?.error?.erro || 'Não foi possível excluir a loja. Tente novamente.';
+        }
+      });
+    }
+  }
+
+  private limparMensagemAposTempo(): void {
+    setTimeout(() => {
+      this.mensagemSucesso = null;
+    }, 4000);
   }
 
   toggleExpansao(item: FeiraItemAdmin): void {

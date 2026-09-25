@@ -87,4 +87,17 @@ export class LojaV1Controller {
       return res.status(400).json({ erro: error.message });
     }
   };
+
+  public excluir = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const { id } = req.params as unknown as { id: string };
+      const excluida = await this.lojaService.excluirLoja(id);
+      if (!excluida) {
+        return res.status(404).json({ erro: 'Loja não encontrada' });
+      }
+      return res.status(200).json({ mensagem: 'Loja excluída com sucesso.' });
+    } catch (error: any) {
+      return res.status(500).json({ erro: error.message });
+    }
+  };
 }

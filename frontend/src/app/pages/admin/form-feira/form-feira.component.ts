@@ -96,6 +96,41 @@ export class FormFeiraComponent implements OnInit {
     return (this.form.controls.diasFuncionamento.value ?? []).includes(dia);
   }
 
+  modalExclusaoAberto: boolean = false;
+  excluindo: boolean = false;
+
+  abrirModalExclusao(): void {
+    this.modalExclusaoAberto = true;
+  }
+
+  fecharModalExclusao(): void {
+    if (this.excluindo) return;
+    this.modalExclusaoAberto = false;
+  }
+
+  confirmarExclusao(): void {
+    if (!this.feiraId || this.excluindo) return;
+
+    this.excluindo = true;
+    this.mensagemErro = null;
+
+    this.apiService.excluirFeira(this.feiraId).subscribe({
+      next: () => {
+        this.excluindo = false;
+        this.modalExclusaoAberto = false;
+        this.mensagemSucesso = 'Feira e suas lojas vinculadas foram excluídas com sucesso!';
+        setTimeout(() => {
+          this.router.navigate(['/admin']);
+        }, 1200);
+      },
+      error: (err) => {
+        console.error('Erro ao excluir feira', err);
+        this.excluindo = false;
+        this.mensagemErro = err?.error?.erro || 'Erro ao excluir feira. Tente novamente.';
+      }
+    });
+  }
+
   salvar(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();

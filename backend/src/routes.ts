@@ -29,17 +29,19 @@ router.post('/admin/verificar-chave', (req: Request, res: Response): void => {
   res.status(401).json({ valido: false, erro: 'Chave administrativa incorreta ou não fornecida.' });
 });
 
-// Rotas de Feiras (GET público, POST/PUT protegidos)
+// Rotas de Feiras (GET público, POST/PUT/DELETE protegidos)
 router.get('/feiras', feiraController.listar);
 router.get('/feiras/:id', feiraController.obterPorId);
 router.put('/feiras/:id', authMiddleware, feiraController.atualizar);
 router.post('/feiras', authMiddleware, feiraController.criar);
+router.delete('/feiras/:id', authMiddleware, feiraController.excluir);
 
-// Rotas de Lojas (GET público, POST/PUT protegidos com upload de imagem)
+// Rotas de Lojas (GET público, POST/PUT/DELETE protegidos com upload de imagem onde aplicável)
 router.get('/lojas/feira/:feiraId', lojaController.listarPorFeira);
 router.get('/lojas/buscar', lojaController.buscar); // RF06
 router.get('/lojas/:id', lojaController.obterPorId);
 router.put('/lojas/:id', authMiddleware, upload.single('imagem'), lojaController.atualizar);
 router.post('/lojas', authMiddleware, upload.single('imagem'), lojaController.criar);
+router.delete('/lojas/:id', authMiddleware, lojaController.excluir);
 
 export default router;

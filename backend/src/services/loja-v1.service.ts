@@ -70,4 +70,9 @@ export class LojaV1Service {
   public async buscarPorId(id: string): Promise<ILoja | null> {
     return await Loja.findById(id).populate('feira');
   }
+
+  public async excluirLoja(id: string): Promise<boolean> {
+    const lojaExcluida = await Loja.findByIdAndDelete(id);
+    return Boolean(lojaExcluida);
+  }
 }

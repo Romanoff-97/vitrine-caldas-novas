@@ -254,6 +254,41 @@ export class FormLojaComponent implements OnInit {
     });
   }
 
+  modalExclusaoAberto: boolean = false;
+  excluindo: boolean = false;
+
+  abrirModalExclusao(): void {
+    this.modalExclusaoAberto = true;
+  }
+
+  fecharModalExclusao(): void {
+    if (this.excluindo) return;
+    this.modalExclusaoAberto = false;
+  }
+
+  confirmarExclusao(): void {
+    if (!this.lojaId || this.excluindo) return;
+
+    this.excluindo = true;
+    this.mensagemErro = null;
+
+    this.apiService.excluirLoja(this.lojaId).subscribe({
+      next: () => {
+        this.excluindo = false;
+        this.modalExclusaoAberto = false;
+        this.mensagemSucesso = 'Loja excluída com sucesso!';
+        setTimeout(() => {
+          this.router.navigate(['/admin']);
+        }, 1200);
+      },
+      error: (err) => {
+        console.error('Erro ao excluir loja', err);
+        this.excluindo = false;
+        this.mensagemErro = err?.error?.erro || 'Erro ao excluir loja. Tente novamente.';
+      }
+    });
+  }
+
   voltarParaPaginaAnterior() {
     this.router.navigate(['/admin']);
   }
