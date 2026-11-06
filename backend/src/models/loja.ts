@@ -1,6 +1,11 @@
 import mongoose, { Schema, type Document } from 'mongoose';
 
 // 1. Tipagem Forte (Interface)
+export interface IProdutoFoto {
+  url: string;
+  publicId: string;
+}
+
 export interface ILoja extends Document {
   nome: string;
   categoria: string;
@@ -8,6 +13,7 @@ export interface ILoja extends Document {
   whatsapp: string;
   imagemUrl?: string;
   horarioFuncionamento?: string;
+  galeria?: IProdutoFoto[];
   diasFuncionamento: number[];
   feira: mongoose.Types.ObjectId; // Referência direta (Relacionamento)
 }
@@ -21,6 +27,12 @@ const LojaSchema: Schema = new Schema(
     whatsapp: { type: String, required: true },
     imagemUrl: { type: String, required: false },
     horarioFuncionamento: { type: String, required: false },
+    galeria: [
+      {
+        url: { type: String, required: true },
+        publicId: { type: String, required: true }
+      }
+    ],
     diasFuncionamento: { type: [Number], required: true },
     feira: { type: Schema.Types.ObjectId, ref: 'Feira', required: true } // OCP: Referenciando a Feira sem acoplar a classe
   },

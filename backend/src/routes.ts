@@ -44,4 +44,9 @@ router.put('/lojas/:id', authMiddleware, upload.single('imagem'), lojaController
 router.post('/lojas', authMiddleware, upload.single('imagem'), lojaController.criar);
 router.delete('/lojas/:id', authMiddleware, lojaController.excluir);
 
+// Rotas da Galeria de Fotos de Produtos da Loja (POST com upload múltiplo de até 6 fotos e DELETE protegidos)
+router.post('/lojas/:id/galeria', authMiddleware, upload.array('fotos', 6), lojaController.adicionarFotosGaleria);
+router.delete('/lojas/:id/galeria/*publicId', authMiddleware, lojaController.removerFotoGaleria);
+router.delete('/lojas/:id/galeria', authMiddleware, lojaController.removerFotoGaleria);
+
 export default router;

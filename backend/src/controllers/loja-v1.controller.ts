@@ -100,4 +100,55 @@ export class LojaV1Controller {
       return res.status(500).json({ erro: error.message });
     }
   };
+
+  public adicionarFotosGaleria = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const { id } = req.params as unknown as { id: string };
+      const files = req.files as Express.Multer.File[] | undefined;
+
+      if (!files || !Array.isArray(files) || files.length === 0) {
+        return res.status(400).json({ erro: 'Nenhum arquivo de imagem foi enviado para a galeria.' });
+      }
+
+      const fotos = files.map((file) => ({
+        path: file.path,
+        filename: file.filename
+      }));
+
+      const lojaAtualizada = await this.lojaService.adicionarFotosGaleria(id, fotos);
+      if (!lojaAtualizada) {
+        return res.status(404).json({ erro: 'Loja não encontrada.' });
+      }
+
+      return res.status(200).json(lojaAtualizada);
+    } catch (error: any) {
+      return res.status(400).json({ erro: error.message });
+    }
+  };
+
+  public removerFotoGaleria = async (req: Request, res: Response): Promise<Response> => {
+    try {
+      const { id } = req.params as unknown as { id: string };
+      let publicIdRaw = req.params.publicId || (req.params as any)[0] || req.query.publicId || req.body?.publicId;
+
+      if (Array.isArray(publicIdRaw)) {
+        publicIdRaw = publicIdRaw.join('/');
+      }
+
+      const publicId = typeof publicIdRaw === 'string' ? decodeURIComponent(publicIdRaw).trim() : undefined;
+
+      if (!publicId) {
+        return res.status(400).json({ erro: 'Identificador (publicId) da foto é obrigatório.' });
+      }
+
+      const lojaAtualizada = await this.lojaService.removerFotoGaleria(id, publicId);
+      if (!lojaAtualizada) {
+        return res.status(404).json({ erro: 'Loja não encontrada.' });
+      }
+
+      return res.status(200).json(lojaAtualizada);
+    } catch (error: any) {
+      return res.status(500).json({ erro: error.message });
+    }
+  };
 }

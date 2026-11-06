@@ -41,6 +41,13 @@ export class FeiraV1Service {
       if (loja.imagemUrl) {
         await CloudinaryService.excluirImagem(loja.imagemUrl);
       }
+      if (loja.galeria && loja.galeria.length > 0) {
+        for (const foto of loja.galeria) {
+          if (foto.publicId) {
+            await CloudinaryService.excluirImagem(foto.publicId);
+          }
+        }
+      }
     }
 
     // Higienização no Cloudinary caso a própria feira possua imagem

@@ -1,4 +1,4 @@
-import Loja, { type ILoja } from '../models/loja';
+import Loja, { type ILoja, type IProdutoFoto } from '../models/loja';
 import Feira from '../models/feira';
 import { Types } from 'mongoose';
 import { CloudinaryService } from './cloudinary.service';
@@ -77,6 +77,53 @@ export class LojaV1Service {
     return await Loja.findById(id).populate('feira');
   }
 
+  public async adicionarFotosGaleria(
+    lojaId: string,
+    fotos: { path: string; filename?: string }[]
+  ): Promise<ILoja | null> {
+    const lojaExistente = await Loja.findById(lojaId);
+    if (!lojaExistente) {
+      return null;
+    }
+
+    const novasFotos: IProdutoFoto[] = fotos
+      .map((foto) => {
+        const publicId = foto.filename || CloudinaryService.extrairPublicId(foto.path) || '';
+        return {
+          url: foto.path,
+          publicId
+        };
+      })
+      .filter((foto) => foto.publicId !== '');
+
+    if (novasFotos.length === 0) {
+      return lojaExistente;
+    }
+
+    return await Loja.findByIdAndUpdate(
+      lojaId,
+      { $push: { galeria: { $each: novasFotos } } },
+      { new: true }
+    ).populate('feira');
+  }
+
+  public async removerFotoGaleria(lojaId: string, publicId: string): Promise<ILoja | null> {
+    const lojaExistente = await Loja.findById(lojaId);
+    if (!lojaExistente) {
+      return null;
+    }
+
+    // Higienização no Cloudinary: exclui a foto na nuvem
+    await CloudinaryService.excluirImagem(publicId);
+
+    // Remove a foto do array da galeria da loja
+    return await Loja.findByIdAndUpdate(
+      lojaId,
+      { $pull: { galeria: { publicId } } },
+      { new: true }
+    ).populate('feira');
+  }
+
   public async excluirLoja(id: string): Promise<boolean> {
     const lojaExistente = await Loja.findById(id);
     if (!lojaExistente) {
@@ -86,6 +133,15 @@ export class LojaV1Service {
     // Higienização no Cloudinary: exclui a imagem vinculada à loja antes de remover do banco
     if (lojaExistente.imagemUrl) {
       await CloudinaryService.excluirImagem(lojaExistente.imagemUrl);
+    }
+
+    // Higienização no Cloudinary: exclui todas as fotos da galeria de produtos da loja
+    if (lojaExistente.galeria && lojaExistente.galeria.length > 0) {
+      for (const foto of lojaExistente.galeria) {
+        if (foto.publicId) {
+          await CloudinaryService.excluirImagem(foto.publicId);
+        }
+      }
     }
 
     await Loja.findByIdAndDelete(id);
