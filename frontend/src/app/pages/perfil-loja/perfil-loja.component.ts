@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, HostListener } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api.service';
@@ -19,6 +19,14 @@ export class PerfilLojaComponent implements OnInit {
   public loja: Loja | null = null;
   public loading: boolean = true;
   public erro: string | null = null;
+  public fotoModalUrl: string | null = null;
+
+  @HostListener('document:keydown.escape')
+  public onEscape(): void {
+    if (this.fotoModalUrl) {
+      this.fecharFotoModal();
+    }
+  }
 
   private route = inject(ActivatedRoute);
   private apiService = inject(ApiService);
@@ -86,5 +94,13 @@ export class PerfilLojaComponent implements OnInit {
     if (dias.length === 7) return 'Todos os dias';
     const nomes = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
     return dias.map(d => nomes[d] ?? '').filter(Boolean).join(', ');
+  }
+
+  public abrirFotoModal(url: string): void {
+    this.fotoModalUrl = url;
+  }
+
+  public fecharFotoModal(): void {
+    this.fotoModalUrl = null;
   }
 }

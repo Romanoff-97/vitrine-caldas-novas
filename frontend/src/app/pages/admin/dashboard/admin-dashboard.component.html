@@ -189,10 +189,19 @@
         </div>
 
         <!-- Dias de Funcionamento e Ação de Adicionar Loja -->
-        <div class="flex items-center justify-between gap-2 pt-1">
-          <div class="flex items-center gap-1.5 text-xs text-slate-600 font-medium">
-            <span aria-hidden="true">📅</span>
-            <span class="text-[11px] text-slate-500">{{ formatarDias(item.feira.diasFuncionamento) }}</span>
+        <div class="flex items-center justify-between gap-2 pt-1 flex-wrap">
+          <div class="flex items-center gap-2 text-xs text-slate-600 font-medium flex-wrap">
+            <span class="flex items-center gap-1">
+              <span aria-hidden="true">📅</span>
+              <span class="text-[11px] text-slate-500">{{ formatarDias(item.feira.diasFuncionamento) }}</span>
+            </span>
+            @if (item.feira.horarioFuncionamento) {
+            <span class="text-slate-300 text-xs" aria-hidden="true">•</span>
+            <span class="inline-flex items-center gap-1 text-[11px] text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md">
+              <span aria-hidden="true">⏰</span>
+              <span>{{ item.feira.horarioFuncionamento }}</span>
+            </span>
+            }
           </div>
 
           <!-- Ação Rápida: Adicionar Loja a esta Feira -->
@@ -265,6 +274,18 @@
                   <span class="text-[10px] text-emerald-700 font-medium">
                     {{ formatarDias(loja.diasFuncionamento) }}
                   </span>
+                  @if (loja.horarioFuncionamento) {
+                  <span class="text-slate-300 text-xs" aria-hidden="true">•</span>
+                  <span class="text-[10px] text-slate-600 font-medium bg-slate-100 px-1.5 py-0.5 rounded">
+                    ⏰ {{ loja.horarioFuncionamento }}
+                  </span>
+                  }
+                  @if (loja.galeria && loja.galeria.length > 0) {
+                  <span class="text-slate-300 text-xs" aria-hidden="true">•</span>
+                  <span class="text-[10px] text-slate-600 font-medium bg-slate-100 px-1.5 py-0.5 rounded">
+                    📸 {{ loja.galeria.length }} foto(s)
+                  </span>
+                  }
                 </div>
               </div>
             </div>
