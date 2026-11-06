@@ -21,6 +21,10 @@ export class ApiService {
    * Constrói os cabeçalhos de autenticação para operações protegidas.
    * Utiliza exclusivamente o padrão 'x-admin-key'.
    */
+  public getAuthHeaders(): HttpHeaders {
+    return this.obterHeadersAutenticados();
+  }
+
   private obterHeadersAutenticados(): HttpHeaders {
     const chave = this.adminAuthService.getChave();
     if (chave) {
@@ -87,6 +91,22 @@ export class ApiService {
   excluirLoja(id: string): Observable<RespostaMensagem> {
     return this.http.delete<RespostaMensagem>(`${this.apiUrl}/lojas/${id}`, {
       headers: this.obterHeadersAutenticados()
+    });
+  }
+
+  // === GALERIA DE PRODUTOS ===
+  uploadGaleria(lojaId: string, files: File[]): Observable<Loja> {
+    const formData = new FormData();
+    files.forEach(file => formData.append('fotos', file));
+    return this.http.post<Loja>(`${this.apiUrl}/lojas/${lojaId}/galeria`, formData, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  removerFotoGaleria(lojaId: string, publicId: string): Observable<Loja> {
+    return this.http.delete<Loja>(`${this.apiUrl}/lojas/${lojaId}/galeria`, {
+      headers: this.getAuthHeaders(),
+      body: { publicId }
     });
   }
 }

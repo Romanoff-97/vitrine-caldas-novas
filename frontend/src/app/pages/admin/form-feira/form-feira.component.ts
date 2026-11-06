@@ -45,6 +45,7 @@ export class FormFeiraComponent implements OnInit {
     nome: ['', [Validators.required, Validators.minLength(3)]],
     localizacao: ['', [Validators.required, Validators.minLength(3)]],
     mapsUrl: [''],
+    horarioFuncionamento: [''],
     diasFuncionamento: this.fb.control<number[]>([], [Validators.required, Validators.minLength(1)]),
     ativo: [true, [Validators.required]]
   });
@@ -67,6 +68,7 @@ export class FormFeiraComponent implements OnInit {
           nome: feira.nome,
           localizacao: feira.localizacao,
           mapsUrl: feira.mapsUrl ?? '',
+          horarioFuncionamento: feira.horarioFuncionamento ?? '',
           diasFuncionamento: feira.diasFuncionamento ?? [],
           ativo: feira.ativo ?? true
         });
@@ -147,6 +149,7 @@ export class FormFeiraComponent implements OnInit {
       nome: this.form.value.nome!.trim(),
       localizacao: this.form.value.localizacao!.trim(),
       mapsUrl: this.form.value.mapsUrl?.trim() || undefined,
+      horarioFuncionamento: this.form.value.horarioFuncionamento?.trim() || undefined,
       diasFuncionamento: this.form.value.diasFuncionamento!,
       ativo: Boolean(this.form.value.ativo)
     };

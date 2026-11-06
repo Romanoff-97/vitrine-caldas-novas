@@ -4,5 +4,6 @@ export interface Feira {
   diasFuncionamento: number[];
   localizacao: string;
   mapsUrl?: string;
+  horarioFuncionamento?: string;
   ativo: boolean;
 }

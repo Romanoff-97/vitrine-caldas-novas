@@ -3,7 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
 import { Feira } from '../../../models/feira.interface';
-import { Loja } from '../../../models/loja.interface';
+import { Loja, IProdutoFoto } from '../../../models/loja.interface';
 
 interface DiaSemanaItem {
   label: string;
@@ -35,6 +35,12 @@ export class FormLojaComponent implements OnInit {
   fotoFile: File | null = null;
   fotoPreview: string | null = null;
 
+  galeria: IProdutoFoto[] = [];
+  uploadingGaleria: boolean = false;
+  removendoFotoPublicId: string | null = null;
+  mensagemGaleriaSucesso: string | null = null;
+  mensagemGaleriaErro: string | null = null;
+
   feiras: Feira[] = [];
   feiraSelecionada: Feira | null = null;
 
@@ -55,6 +61,7 @@ export class FormLojaComponent implements OnInit {
     descricao: ['', [Validators.required, Validators.minLength(5)]],
     whatsapp: ['', [Validators.required, Validators.minLength(10)]],
     imagemUrl: [''],
+    horarioFuncionamento: [''],
     diasFuncionamento: this.fb.control<number[]>([])
   });
 
@@ -100,8 +107,11 @@ export class FormLojaComponent implements OnInit {
           descricao: loja.descricao,
           whatsapp: loja.whatsapp,
           imagemUrl: loja.imagemUrl ?? '',
+          horarioFuncionamento: loja.horarioFuncionamento ?? '',
           diasFuncionamento: loja.diasFuncionamento ?? []
         });
+
+        this.galeria = loja.galeria ?? [];
 
         if (loja.imagemUrl) {
           this.fotoPreview = loja.imagemUrl;
@@ -225,6 +235,10 @@ export class FormLojaComponent implements OnInit {
     formData.append('whatsapp', this.form.value.whatsapp!.trim());
     formData.append('diasFuncionamento', JSON.stringify(dias));
 
+    if (this.form.value.horarioFuncionamento?.trim()) {
+      formData.append('horarioFuncionamento', this.form.value.horarioFuncionamento.trim());
+    }
+
     if (this.fotoFile) {
       formData.append('imagem', this.fotoFile);
     } else if (this.form.value.imagemUrl) {
@@ -250,6 +264,64 @@ export class FormLojaComponent implements OnInit {
         console.error('Erro ao salvar loja', err);
         this.salvando = false;
         this.mensagemErro = err?.error?.erro || 'Erro ao processar dados da loja. Verifique os campos.';
+      }
+    });
+  }
+
+  onGaleriaSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files || input.files.length === 0 || !this.lojaId) return;
+
+    const files = Array.from(input.files);
+    if (files.length > 6) {
+      this.mensagemGaleriaErro = 'Você pode enviar no máximo 6 fotos por vez.';
+      input.value = '';
+      return;
+    }
+
+    this.uploadingGaleria = true;
+    this.mensagemGaleriaErro = null;
+    this.mensagemGaleriaSucesso = null;
+
+    this.apiService.uploadGaleria(this.lojaId, files).subscribe({
+      next: (lojaAtualizada: Loja) => {
+        this.galeria = lojaAtualizada.galeria ?? [];
+        this.uploadingGaleria = false;
+        this.mensagemGaleriaSucesso = `${files.length} foto(s) adicionada(s) à galeria com sucesso!`;
+        input.value = '';
+        setTimeout(() => {
+          this.mensagemGaleriaSucesso = null;
+        }, 3000);
+      },
+      error: (err: any) => {
+        console.error('Erro ao enviar fotos para a galeria', err);
+        this.uploadingGaleria = false;
+        this.mensagemGaleriaErro = err?.error?.erro || 'Erro ao enviar fotos para a galeria. Tente novamente.';
+        input.value = '';
+      }
+    });
+  }
+
+  removerFotoGaleria(publicId: string): void {
+    if (!this.lojaId || !publicId || this.removendoFotoPublicId) return;
+
+    this.removendoFotoPublicId = publicId;
+    this.mensagemGaleriaErro = null;
+    this.mensagemGaleriaSucesso = null;
+
+    this.apiService.removerFotoGaleria(this.lojaId, publicId).subscribe({
+      next: (lojaAtualizada: Loja) => {
+        this.galeria = lojaAtualizada.galeria ?? [];
+        this.removendoFotoPublicId = null;
+        this.mensagemGaleriaSucesso = 'Foto removida da galeria com sucesso!';
+        setTimeout(() => {
+          this.mensagemGaleriaSucesso = null;
+        }, 2500);
+      },
+      error: (err: any) => {
+        console.error('Erro ao remover foto da galeria', err);
+        this.removendoFotoPublicId = null;
+        this.mensagemGaleriaErro = err?.error?.erro || 'Erro ao remover foto da galeria.';
       }
     });
   }
