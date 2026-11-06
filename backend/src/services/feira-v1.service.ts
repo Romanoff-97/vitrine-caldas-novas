@@ -1,5 +1,6 @@
 import Feira, { type IFeira } from '../models/feira';
 import Loja from '../models/loja';
+import { CloudinaryService } from './cloudinary.service';
 
 export class FeiraV1Service {
   public async listarFeiras(): Promise<IFeira[]> {
@@ -16,6 +17,15 @@ export class FeiraV1Service {
   }
 
   public async atualizarFeira(id: string, dados: Partial<IFeira>): Promise<IFeira | null> {
+    const feiraExistente = await Feira.findById(id);
+    if (!feiraExistente) {
+      return null;
+    }
+
+    if ((dados as any).imagemUrl && (feiraExistente as any).imagemUrl && (dados as any).imagemUrl !== (feiraExistente as any).imagemUrl) {
+      await CloudinaryService.excluirImagem((feiraExistente as any).imagemUrl);
+    }
+
     return await Feira.findByIdAndUpdate(id, dados, { new: true });
   }
 
@@ -23,6 +33,19 @@ export class FeiraV1Service {
     const feiraExistente = await Feira.findById(id);
     if (!feiraExistente) {
       return false;
+    }
+
+    // Higienização no Cloudinary das lojas vinculadas que possuem imagem antes da exclusão em cascata
+    const lojasVinculadas = await Loja.find({ feira: id });
+    for (const loja of lojasVinculadas) {
+      if (loja.imagemUrl) {
+        await CloudinaryService.excluirImagem(loja.imagemUrl);
+      }
+    }
+
+    // Higienização no Cloudinary caso a própria feira possua imagem
+    if ((feiraExistente as any).imagemUrl) {
+      await CloudinaryService.excluirImagem((feiraExistente as any).imagemUrl);
     }
 
     // Exclusão em cascata: remove todas as lojas vinculadas à feira

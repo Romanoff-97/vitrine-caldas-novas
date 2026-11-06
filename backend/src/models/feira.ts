@@ -6,6 +6,7 @@ export interface IFeira extends Document {
   diasFuncionamento: number[];
   localizacao: string;
   mapsUrl?: string;
+  horarioFuncionamento?: string;
   ativo: boolean;
 }
 
@@ -17,6 +18,7 @@ const FeiraSchema: Schema = new Schema(
     diasFuncionamento: { type: [Number], required: true },
     localizacao: { type: String, required: true },
     mapsUrl: { type: String, required: false },
+    horarioFuncionamento: { type: String, required: false },
     ativo: { type: Boolean, default: true }
   },
   {

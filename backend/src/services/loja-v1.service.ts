@@ -1,6 +1,7 @@
 import Loja, { type ILoja } from '../models/loja';
 import Feira from '../models/feira';
 import { Types } from 'mongoose';
+import { CloudinaryService } from './cloudinary.service';
 
 export class LojaV1Service {
   public async listarLojasPorFeira(feiraId: string): Promise<ILoja[]> {
@@ -64,6 +65,11 @@ export class LojaV1Service {
       }
     }
 
+    // Higienização no Cloudinary: se uma nova imagem foi enviada e a loja já possuía imagem anterior, exclui a anterior
+    if (dados.imagemUrl && lojaExistente.imagemUrl && dados.imagemUrl !== lojaExistente.imagemUrl) {
+      await CloudinaryService.excluirImagem(lojaExistente.imagemUrl);
+    }
+
     return await Loja.findByIdAndUpdate(id, dados, { new: true }).populate('feira');
   }
 
@@ -72,7 +78,17 @@ export class LojaV1Service {
   }
 
   public async excluirLoja(id: string): Promise<boolean> {
-    const lojaExcluida = await Loja.findByIdAndDelete(id);
-    return Boolean(lojaExcluida);
+    const lojaExistente = await Loja.findById(id);
+    if (!lojaExistente) {
+      return false;
+    }
+
+    // Higienização no Cloudinary: exclui a imagem vinculada à loja antes de remover do banco
+    if (lojaExistente.imagemUrl) {
+      await CloudinaryService.excluirImagem(lojaExistente.imagemUrl);
+    }
+
+    await Loja.findByIdAndDelete(id);
+    return true;
   }
 }

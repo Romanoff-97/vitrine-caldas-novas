@@ -7,6 +7,7 @@ export interface ILoja extends Document {
   descricao: string;
   whatsapp: string;
   imagemUrl?: string;
+  horarioFuncionamento?: string;
   diasFuncionamento: number[];
   feira: mongoose.Types.ObjectId; // Referência direta (Relacionamento)
 }
@@ -19,6 +20,7 @@ const LojaSchema: Schema = new Schema(
     descricao: { type: String, required: true },
     whatsapp: { type: String, required: true },
     imagemUrl: { type: String, required: false },
+    horarioFuncionamento: { type: String, required: false },
     diasFuncionamento: { type: [Number], required: true },
     feira: { type: Schema.Types.ObjectId, ref: 'Feira', required: true } // OCP: Referenciando a Feira sem acoplar a classe
   },
