@@ -115,6 +115,12 @@
         <span aria-hidden="true">🛵</span>
         <span>Faz Entregas</span>
       </span>
+      } @else {
+      <span
+        class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 text-slate-700 border border-slate-200 flex items-center gap-1.5">
+        <span aria-hidden="true">🏬</span>
+        <span>Não Faz Entregas (Apenas no Local)</span>
+      </span>
       }
     </div>
 
@@ -128,111 +134,119 @@
 
     <!-- Bloco de Itinerário / Múltiplos Locais (Comércio Itinerante) -->
     @if (loja.itinerario && loja.itinerario.length > 0) {
-    <section class="mt-2 p-4 md:p-5 rounded-2xl bg-slate-900 text-white shadow-md flex flex-col gap-3.5" aria-labelledby="titulo-itinerario">
-      <div class="flex items-center justify-between">
-        <h3 id="titulo-itinerario" class="text-base font-bold text-white flex items-center gap-2">
-          <span aria-hidden="true">🗺️</span>
-          <span>Onde nos Encontrar</span>
-        </h3>
-        <span class="text-[11px] font-semibold bg-slate-800 text-slate-300 px-2.5 py-1 rounded-full border border-slate-700">
-          Comércio Itinerante
-        </span>
-      </div>
-
-      <!-- Card do Ponto de Hoje -->
-      @if (paradaHoje) {
-      <div class="p-3.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-400 uppercase tracking-wider">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true"></span>
-            <span>Hoje ({{ nomesDiasCompletos[diaSemanaAtual] }})</span>
-          </div>
-          <p class="text-sm md:text-base font-bold text-white mt-1">
-            📍 {{ paradaHoje.local }}
-          </p>
-          <p class="text-xs text-emerald-200 mt-0.5 flex items-center gap-1">
-            <span aria-hidden="true">⏰</span>
-            <span>{{ paradaHoje.horario }}</span>
-          </p>
+      <section
+        class="mt-2 p-4 md:p-5 rounded-2xl bg-emerald-50/50 border border-emerald-200/60 shadow-xs flex flex-col gap-3.5"
+        aria-labelledby="titulo-itinerario">
+        <div class="flex items-center justify-between">
+            <h3 id="titulo-itinerario" class="text-base font-bold text-slate-900 flex items-center gap-2">
+              <span aria-hidden="true">🗺️</span>
+              <span>Onde nos Encontrar</span>
+            </h3>
+              <span
+                class="text-[11px] font-semibold bg-emerald-100 text-emerald-800 px-2.5 py-1 rounded-full border border-emerald-200">
+                Comércio Itinerante
+              </span>
         </div>
 
-        @if (paradaHoje.mapsUrl) {
-        <a [href]="paradaHoje.mapsUrl" target="_blank" rel="noopener noreferrer"
-          class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition-all shadow-sm shrink-0 cursor-pointer"
-          [attr.aria-label]="'Abrir localização de hoje no Google Maps para ' + loja.nome">
-          <span>Como Chegar</span>
-          <span aria-hidden="true">↗</span>
-        </a>
-        }
-      </div>
-      } @else {
-      <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700 text-xs text-slate-300">
-        Hoje ({{ nomesDiasCompletos[diaSemanaAtual] }}) não há atendimento presencial programado. Confira a agenda semanal completa abaixo.
-      </div>
+        <!-- Card do Ponto de Hoje -->
+        @if (paradaHoje) {
+          <div
+            class="p-3.5 rounded-xl bg-white border border-emerald-300 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+                <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-800 uppercase tracking-wider">
+                  <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true"></span>
+                  <span>Hoje ({{ nomesDiasCompletos[diaSemanaAtual] }})</span>
+                </div>
+                <p class="text-sm md:text-base font-extrabold text-slate-900 mt-1">
+                  📍 {{ paradaHoje.local }}
+                </p>
+                <p class="text-xs text-slate-600 font-medium mt-0.5 flex items-center gap-1">
+                  <span aria-hidden="true">⏰</span>
+                  <span>{{ paradaHoje.horario }}</span>
+                </p>
+              </div>
+
+              @if (paradaHoje.mapsUrl) {
+              <a [href]="paradaHoje.mapsUrl" target="_blank" rel="noopener noreferrer"
+                class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition-all shadow-sm shrink-0 cursor-pointer"
+                [attr.aria-label]="'Abrir localização de hoje no Google Maps para ' + loja.nome">
+                <span>Como Chegar</span>
+                <span aria-hidden="true">↗</span>
+              </a>
+              }
+            </div>
+            } @else {
+              <div class="p-3 rounded-xl bg-white border border-slate-200 text-xs text-slate-600 shadow-2xs">
+                Hoje ({{ nomesDiasCompletos[diaSemanaAtual] }}) não há atendimento presencial programado. Confira a
+                agenda semanal completa abaixo.
+              </div>
+              }
+
+              <!-- Agenda Semanal Completa -->
+              <div class="flex flex-col gap-2">
+                <p class="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                  Cronograma Semanal Completo
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  @for (parada of loja.itinerario; track $index) {
+                    <div
+                      class="p-3 rounded-xl bg-white border border-slate-200/90 shadow-2xs flex flex-col justify-between gap-2 text-xs">
+                      <div>
+                          <div class="flex items-center justify-between gap-1 text-[11px] font-bold">
+                            <span class="text-emerald-800">{{ formatarDiasItinerario(parada.dias) }}</span>
+                            <span class="text-slate-500 font-normal">⏰ {{ parada.horario }}</span>
+                          </div>
+                          <p class="text-xs text-slate-800 font-medium mt-1">
+                            📍 {{ parada.local }}
+                          </p>
+                        </div>
+
+                        @if (parada.mapsUrl) {
+                        <a [href]="parada.mapsUrl" target="_blank" rel="noopener noreferrer"
+                          class="text-[11px] text-emerald-700 hover:text-emerald-900 font-medium inline-flex items-center gap-1 cursor-pointer pt-1 border-t border-slate-100 transition-colors"
+                          [attr.aria-label]="'Ver no Google Maps: ' + parada.local">
+                          <span>Ver no Google Maps</span>
+                          <span aria-hidden="true">↗</span>
+                        </a>
+                        }
+                      </div>
+                      }
+                    </div>
+                  </div>
+      </section>
       }
 
-      <!-- Agenda Semanal Completa -->
-      <div class="flex flex-col gap-2">
-        <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-          Cronograma Semanal Completo
+      <!-- Sobre a Loja -->
+      <div class="mt-2">
+        <h3 class="text-base md:text-lg font-bold text-gray-900 mb-2">Sobre a loja</h3>
+        <p class="text-sm md:text-base text-gray-600 leading-relaxed whitespace-pre-line"
+          [innerHTML]="loja.descricao | linkify">
         </p>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          @for (parada of loja.itinerario; track $index) {
-          <div class="p-3 rounded-xl bg-slate-800/60 border border-slate-700/80 flex flex-col justify-between gap-2 text-xs">
-            <div>
-              <div class="flex items-center justify-between gap-1 text-[11px] text-amber-400 font-bold">
-                <span>{{ formatarDiasItinerario(parada.dias) }}</span>
-                <span class="text-slate-400 font-normal">⏰ {{ parada.horario }}</span>
-              </div>
-              <p class="text-xs text-white font-medium mt-1">
-                📍 {{ parada.local }}
-              </p>
-            </div>
+      </div>
 
-            @if (parada.mapsUrl) {
-            <a [href]="parada.mapsUrl" target="_blank" rel="noopener noreferrer"
-              class="text-[11px] text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-1 cursor-pointer pt-1 border-t border-slate-700/60 transition-colors"
-              [attr.aria-label]="'Ver no Google Maps: ' + parada.local">
-              <span>Ver no Google Maps</span>
-              <span aria-hidden="true">↗</span>
-            </a>
-            }
-          </div>
+      <!-- Seção de Galeria de Fotos de Produtos -->
+      @if (loja.galeria && loja.galeria.length > 0) {
+      <section class="mt-4 pt-4 border-t border-gray-100 flex flex-col gap-3" aria-labelledby="titulo-galeria">
+        <h3 id="titulo-galeria" class="text-base md:text-lg font-bold text-gray-900 flex items-center gap-2">
+          <span aria-hidden="true">📸</span>
+          <span>Fotos dos Produtos & Destaques</span>
+        </h3>
+
+        <!-- Grid de Fotos -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
+          @for (foto of loja.galeria; track $index) {
+          <button type="button"
+            class="relative aspect-square overflow-hidden rounded-2xl border border-gray-200 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 hover:opacity-95 transition-all cursor-pointer group shadow-2xs"
+            (click)="abrirFotoModal(foto.url)"
+            [attr.aria-label]="'Ampliar foto ' + ($index + 1) + ' da loja ' + loja.nome">
+            <img [src]="foto.url" [alt]="'Produto ' + ($index + 1) + ' de ' + loja.nome"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+              loading="lazy" />
+          </button>
           }
         </div>
-      </div>
-    </section>
-    }
-
-    <!-- Sobre a Loja -->
-    <div class="mt-2">
-      <h3 class="text-base md:text-lg font-bold text-gray-900 mb-2">Sobre a loja</h3>
-      <p class="text-sm md:text-base text-gray-600 leading-relaxed whitespace-pre-line" [innerHTML]="loja.descricao | linkify">
-      </p>
-    </div>
-
-    <!-- Seção de Galeria de Fotos de Produtos -->
-    @if (loja.galeria && loja.galeria.length > 0) {
-    <section class="mt-4 pt-4 border-t border-gray-100 flex flex-col gap-3" aria-labelledby="titulo-galeria">
-      <h3 id="titulo-galeria" class="text-base md:text-lg font-bold text-gray-900 flex items-center gap-2">
-        <span aria-hidden="true">📸</span>
-        <span>Fotos dos Produtos & Destaques</span>
-      </h3>
-
-      <!-- Grid de Fotos -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
-        @for (foto of loja.galeria; track $index) {
-        <button type="button"
-          class="relative aspect-square overflow-hidden rounded-2xl border border-gray-200 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 hover:opacity-95 transition-all cursor-pointer group shadow-2xs"
-          (click)="abrirFotoModal(foto.url)"
-          [attr.aria-label]="'Ampliar foto ' + ($index + 1) + ' da loja ' + loja.nome">
-          <img [src]="foto.url" [alt]="'Produto ' + ($index + 1) + ' de ' + loja.nome"
-            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200" loading="lazy" />
-        </button>
-        }
-      </div>
-    </section>
-    }
+      </section>
+      }
   </div>
 </section>
 
@@ -242,7 +256,10 @@
   <a [href]="formatarUrlInstagram(loja.instagram)" target="_blank" rel="noopener noreferrer"
     [attr.aria-label]="'Abrir Instagram de ' + loja.nome"
     class="flex-1 bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 hover:opacity-95 text-white font-bold py-3.5 md:py-4 px-6 rounded-2xl flex items-center justify-center gap-2.5 transition-all shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-base md:text-lg cursor-pointer">
-    <span class="text-xl" aria-hidden="true">📸</span>
+    <svg class="w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+    </svg>
     <span>Instagram</span>
   </a>
   }
