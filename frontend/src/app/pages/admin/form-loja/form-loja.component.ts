@@ -74,9 +74,9 @@ export class FormLojaComponent implements OnInit {
 
   private carregarFeiras(): void {
     this.carregando = true;
-    this.apiService.getFeiras().subscribe({
+    this.apiService.getFeiras({ todas: true }).subscribe({
       next: (feiras) => {
-        this.feiras = feiras.filter(f => f.ativo);
+        this.feiras = feiras;
         if (this.isEdicao && this.lojaId) {
           this.carregarLoja(this.lojaId);
         } else {

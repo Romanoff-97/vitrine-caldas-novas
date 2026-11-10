@@ -1,11 +1,16 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Feira } from '../models/feira.interface';
 import { Loja } from '../models/loja.interface';
 import { RespostaMensagem } from '../models/resposta-api.interface';
 import { API } from '../utils/api';
 import { AdminAuthService } from './admin-auth.service';
+
+export interface OpcoesListarFeiras {
+  todas?: boolean;
+  status?: 'todas' | 'ativas' | 'inativas';
+}
 
 @Injectable({
   providedIn: 'root'
@@ -37,8 +42,15 @@ export class ApiService {
 
 
   // === FEIRAS ===
-  getFeiras(): Observable<Feira[]> {
-    return this.http.get<Feira[]>(`${this.apiUrl}/feiras`);
+  getFeiras(opcoes?: OpcoesListarFeiras): Observable<Feira[]> {
+    let params = new HttpParams();
+    if (opcoes?.todas) {
+      params = params.set('todas', 'true');
+    }
+    if (opcoes?.status) {
+      params = params.set('status', opcoes.status);
+    }
+    return this.http.get<Feira[]>(`${this.apiUrl}/feiras`, { params });
   }
 
   getFeiraPorId(id: string): Observable<Feira> {

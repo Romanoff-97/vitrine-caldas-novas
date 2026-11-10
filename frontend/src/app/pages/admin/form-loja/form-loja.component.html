@@ -54,7 +54,7 @@
           [class.border-red-400]="form.get('feira')?.touched && form.get('feira')?.invalid">
           <option value="" disabled>Selecione uma feira...</option>
           @for (feira of feiras; track $index) {
-          <option [value]="feira._id">{{ feira.nome }}</option>
+          <option [value]="feira._id">{{ feira.nome }}{{ !feira.ativo ? ' (Inativa)' : '' }}</option>
           }
         </select>
         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-400">

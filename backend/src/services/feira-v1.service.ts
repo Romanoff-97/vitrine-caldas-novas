@@ -2,8 +2,21 @@ import Feira, { type IFeira } from '../models/feira';
 import Loja from '../models/loja';
 import { CloudinaryService } from './cloudinary.service';
 
+export interface IFiltroListarFeiras {
+  todas?: string;
+  status?: string;
+}
+
 export class FeiraV1Service {
-  public async listarFeiras(): Promise<IFeira[]> {
+  public async listarFeiras(filtros?: IFiltroListarFeiras): Promise<IFeira[]> {
+    if (filtros?.todas === 'true' || filtros?.status === 'todas') {
+      return await Feira.find();
+    }
+
+    if (filtros?.status === 'inativas') {
+      return await Feira.find({ ativo: false });
+    }
+
     return await Feira.find({ ativo: true });
   }
 

@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../services/api.service';
 import { AdminAuthService } from '../../../services/admin-auth.service';
 import { Feira } from '../../../models/feira.interface';
@@ -25,7 +26,7 @@ export interface ItemExclusaoAdmin {
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './admin-dashboard.component.html',
   host: {
     class: 'flex flex-col flex-1 min-h-0'
@@ -41,6 +42,10 @@ export class AdminDashboardComponent implements OnInit {
   mensagemSucesso: string | null = null;
   feirasAdmin: FeiraItemAdmin[] = [];
 
+  // Filtros de busca e status
+  filtroStatus: 'todas' | 'ativas' | 'inativas' = 'todas';
+  termoBusca: string = '';
+
   itemExclusao: ItemExclusaoAdmin | null = null;
   excluindo: boolean = false;
 
@@ -54,7 +59,7 @@ export class AdminDashboardComponent implements OnInit {
     this.carregando = true;
     this.mensagemErro = null;
 
-    this.apiService.getFeiras().subscribe({
+    this.apiService.getFeiras({ todas: true }).subscribe({
       next: (feiras: Feira[]) => {
         this.feirasAdmin = feiras.map((feira: Feira) => ({
           feira,
@@ -76,6 +81,55 @@ export class AdminDashboardComponent implements OnInit {
         this.carregando = false;
       }
     });
+  }
+
+  get totalFeiras(): number {
+    return this.feirasAdmin.length;
+  }
+
+  get totalAtivas(): number {
+    return this.feirasAdmin.filter(item => item.feira.ativo).length;
+  }
+
+  get totalInativas(): number {
+    return this.feirasAdmin.filter(item => !item.feira.ativo).length;
+  }
+
+  get feirasFiltradas(): FeiraItemAdmin[] {
+    const termo = this.termoBusca.trim().toLowerCase();
+
+    return this.feirasAdmin.filter(item => {
+      // Filtro de status
+      if (this.filtroStatus === 'ativas' && !item.feira.ativo) {
+        return false;
+      }
+      if (this.filtroStatus === 'inativas' && item.feira.ativo) {
+        return false;
+      }
+
+      // Filtro por texto de busca
+      if (termo) {
+        const nomeFeira = item.feira.nome.toLowerCase();
+        const localizacao = (item.feira.localizacao || '').toLowerCase();
+        const temLojaCorrespondente = item.lojas.some(loja =>
+          loja.nome.toLowerCase().includes(termo) ||
+          loja.categoria.toLowerCase().includes(termo)
+        );
+
+        return nomeFeira.includes(termo) || localizacao.includes(termo) || temLojaCorrespondente;
+      }
+
+      return true;
+    });
+  }
+
+  setFiltroStatus(status: 'todas' | 'ativas' | 'inativas'): void {
+    this.filtroStatus = status;
+  }
+
+  limparFiltros(): void {
+    this.filtroStatus = 'todas';
+    this.termoBusca = '';
   }
 
   private carregarLojasDaFeira(item: FeiraItemAdmin): void {

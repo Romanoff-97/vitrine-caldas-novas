@@ -10,7 +10,8 @@ export class FeiraV1Controller {
 
   public listar = async (req: Request, res: Response): Promise<Response> => {
     try {
-      const feiras = await this.feiraService.listarFeiras();
+      const { todas, status } = req.query as { todas?: string; status?: string };
+      const feiras = await this.feiraService.listarFeiras({ todas, status });
       return res.status(200).json(feiras);
     } catch (error: any) {
       return res.status(500).json({ erro: error.message });
