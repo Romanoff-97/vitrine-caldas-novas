@@ -44,10 +44,35 @@ export class LojaV1Controller {
       }
     }
 
+    let itinerario = req.body?.itinerario;
+    if (typeof itinerario === 'string') {
+      try {
+        itinerario = JSON.parse(itinerario);
+      } catch {
+        itinerario = [];
+      }
+    }
+
+    let galeria = req.body?.galeria;
+    if (typeof galeria === 'string') {
+      try {
+        galeria = JSON.parse(galeria);
+      } catch {
+        galeria = undefined;
+      }
+    }
+
+    const delivery = req.body?.delivery !== undefined
+      ? (req.body.delivery === true || req.body.delivery === 'true')
+      : undefined;
+
     return {
       ...req.body,
       ...(imagemUrl ? { imagemUrl } : {}),
-      ...(diasFuncionamento !== undefined ? { diasFuncionamento } : {})
+      ...(diasFuncionamento !== undefined ? { diasFuncionamento } : {}),
+      ...(itinerario !== undefined ? { itinerario } : {}),
+      ...(galeria !== undefined ? { galeria } : {}),
+      ...(delivery !== undefined ? { delivery } : {})
     };
   }
 

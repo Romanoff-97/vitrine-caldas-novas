@@ -2,13 +2,14 @@ import { Component, OnInit, inject, HostListener } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api.service';
-import { Loja } from '../../models/loja.interface';
+import { Loja, IItinerarioParada } from '../../models/loja.interface';
 import { Feira } from '../../models/feira.interface';
+import { LinkifyPipe } from '../../pipes/linkify.pipe';
 
 @Component({
   selector: 'app-perfil-loja',
   standalone: true,
-  imports: [RouterModule, CommonModule],
+  imports: [RouterModule, CommonModule, LinkifyPipe],
   templateUrl: './perfil-loja.component.html',
   styleUrl: './perfil-loja.component.scss',
   host: {
@@ -94,6 +95,37 @@ export class PerfilLojaComponent implements OnInit {
     if (dias.length === 7) return 'Todos os dias';
     const nomes = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
     return dias.map(d => nomes[d] ?? '').filter(Boolean).join(', ');
+  }
+
+  readonly nomesDiasCompletos: string[] = [
+    'Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira',
+    'Quinta-feira', 'Sexta-feira', 'Sábado'
+  ];
+
+  public get diaSemanaAtual(): number {
+    return new Date().getDay();
+  }
+
+  public get paradaHoje(): IItinerarioParada | null {
+    if (!this.loja?.itinerario || this.loja.itinerario.length === 0) return null;
+    const hoje = this.diaSemanaAtual;
+    return this.loja.itinerario.find(p => p.dias.includes(hoje)) || null;
+  }
+
+  public formatarDiasItinerario(dias: number[]): string {
+    if (!dias || dias.length === 0) return '';
+    const nomesCurtos = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+    return dias.map(d => nomesCurtos[d] ?? '').filter(Boolean).join(', ');
+  }
+
+  public formatarUrlInstagram(instagram?: string): string {
+    if (!instagram) return '';
+    const limpo = instagram.trim();
+    if (limpo.startsWith('http://') || limpo.startsWith('https://')) {
+      return limpo;
+    }
+    const perfil = limpo.startsWith('@') ? limpo.substring(1) : limpo;
+    return `https://instagram.com/${perfil}`;
   }
 
   public abrirFotoModal(url: string): void {

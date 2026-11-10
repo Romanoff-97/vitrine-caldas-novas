@@ -1,9 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
 import { Feira } from '../../../models/feira.interface';
-import { Loja, IProdutoFoto } from '../../../models/loja.interface';
+import { Loja, IProdutoFoto, IItinerarioParada } from '../../../models/loja.interface';
 
 interface DiaSemanaItem {
   label: string;
@@ -13,7 +13,7 @@ interface DiaSemanaItem {
 @Component({
   selector: 'app-form-loja',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterModule],
+  imports: [ReactiveFormsModule, FormsModule, RouterModule],
   templateUrl: './form-loja.component.html',
   host: {
     class: 'flex flex-col flex-1 min-h-0'
@@ -35,7 +35,10 @@ export class FormLojaComponent implements OnInit {
   fotoFile: File | null = null;
   fotoPreview: string | null = null;
 
+  lojaDuplicadaNome: string | null = null;
+
   galeria: IProdutoFoto[] = [];
+  itinerario: IItinerarioParada[] = [];
   uploadingGaleria: boolean = false;
   removendoFotoPublicId: string | null = null;
   mensagemGaleriaSucesso: string | null = null;
@@ -60,6 +63,8 @@ export class FormLojaComponent implements OnInit {
     categoria: ['', [Validators.required, Validators.minLength(2)]],
     descricao: ['', [Validators.required, Validators.minLength(5)]],
     whatsapp: ['', [Validators.required, Validators.minLength(10)]],
+    instagram: [''],
+    delivery: [false],
     imagemUrl: [''],
     horarioFuncionamento: [''],
     diasFuncionamento: this.fb.control<number[]>([])
@@ -68,17 +73,20 @@ export class FormLojaComponent implements OnInit {
   ngOnInit(): void {
     this.lojaId = this.route.snapshot.paramMap.get('id');
     this.isEdicao = Boolean(this.lojaId);
+    const duplicarId = this.route.snapshot.queryParamMap.get('duplicarDe');
 
-    this.carregarFeiras();
+    this.carregarFeiras(duplicarId);
   }
 
-  private carregarFeiras(): void {
+  private carregarFeiras(duplicarId?: string | null): void {
     this.carregando = true;
     this.apiService.getFeiras({ todas: true }).subscribe({
       next: (feiras) => {
         this.feiras = feiras;
         if (this.isEdicao && this.lojaId) {
           this.carregarLoja(this.lojaId);
+        } else if (duplicarId) {
+          this.carregarLojaParaDuplicacao(duplicarId);
         } else {
           const feiraQuery = this.route.snapshot.queryParamMap.get('feiraId');
           if (feiraQuery && this.feiras.some(f => f._id === feiraQuery)) {
@@ -96,6 +104,48 @@ export class FormLojaComponent implements OnInit {
     });
   }
 
+  private carregarLojaParaDuplicacao(id: string): void {
+    this.apiService.getLojaPorId(id).subscribe({
+      next: (loja: Loja) => {
+        this.lojaDuplicadaNome = loja.nome;
+
+        // Pré-preenche todos os dados, mantendo a feira em branco para escolha explícita
+        this.form.patchValue({
+          nome: loja.nome,
+          categoria: loja.categoria,
+          descricao: loja.descricao,
+          whatsapp: loja.whatsapp,
+          instagram: loja.instagram ?? '',
+          delivery: loja.delivery ?? false,
+          imagemUrl: loja.imagemUrl ?? '',
+          horarioFuncionamento: loja.horarioFuncionamento ?? '',
+          diasFuncionamento: loja.diasFuncionamento ?? []
+        });
+
+        this.galeria = loja.galeria ? [...loja.galeria] : [];
+        this.itinerario = loja.itinerario && Array.isArray(loja.itinerario)
+          ? loja.itinerario.map(p => ({
+              dias: [...p.dias],
+              local: p.local,
+              horario: p.horario,
+              mapsUrl: p.mapsUrl ?? ''
+            }))
+          : [];
+
+        if (loja.imagemUrl) {
+          this.fotoPreview = loja.imagemUrl;
+        }
+
+        this.carregando = false;
+      },
+      error: (err) => {
+        console.error('Erro ao carregar dados da loja para duplicação', err);
+        this.mensagemErro = 'Não foi possível carregar os dados para duplicação.';
+        this.carregando = false;
+      }
+    });
+  }
+
   private carregarLoja(id: string): void {
     this.apiService.getLojaPorId(id).subscribe({
       next: (loja: Loja) => {
@@ -106,12 +156,22 @@ export class FormLojaComponent implements OnInit {
           categoria: loja.categoria,
           descricao: loja.descricao,
           whatsapp: loja.whatsapp,
+          instagram: loja.instagram ?? '',
+          delivery: loja.delivery ?? false,
           imagemUrl: loja.imagemUrl ?? '',
           horarioFuncionamento: loja.horarioFuncionamento ?? '',
           diasFuncionamento: loja.diasFuncionamento ?? []
         });
 
         this.galeria = loja.galeria ?? [];
+        this.itinerario = loja.itinerario && Array.isArray(loja.itinerario)
+          ? loja.itinerario.map(p => ({
+              dias: [...p.dias],
+              local: p.local,
+              horario: p.horario,
+              mapsUrl: p.mapsUrl ?? ''
+            }))
+          : [];
 
         if (loja.imagemUrl) {
           this.fotoPreview = loja.imagemUrl;
@@ -213,6 +273,35 @@ export class FormLojaComponent implements OnInit {
     return `${Math.round(this.fotoFile.size / 1024)} KB`;
   }
 
+  adicionarParadaItinerario(): void {
+    this.itinerario.push({
+      dias: [],
+      local: '',
+      horario: '',
+      mapsUrl: ''
+    });
+  }
+
+  removerParadaItinerario(index: number): void {
+    this.itinerario.splice(index, 1);
+  }
+
+  toggleDiaParada(paradaIndex: number, dia: number): void {
+    const parada = this.itinerario[paradaIndex];
+    if (!parada) return;
+    const idx = parada.dias.indexOf(dia);
+    if (idx > -1) {
+      parada.dias.splice(idx, 1);
+    } else {
+      parada.dias.push(dia);
+      parada.dias.sort((a, b) => a - b);
+    }
+  }
+
+  isDiaParadaSelecionado(paradaIndex: number, dia: number): boolean {
+    return this.itinerario[paradaIndex]?.dias.includes(dia) ?? false;
+  }
+
   salvar(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -235,14 +324,37 @@ export class FormLojaComponent implements OnInit {
     formData.append('whatsapp', this.form.value.whatsapp!.trim());
     formData.append('diasFuncionamento', JSON.stringify(dias));
 
+    if (this.form.value.instagram?.trim()) {
+      formData.append('instagram', this.form.value.instagram.trim());
+    }
+
+    formData.append('delivery', String(Boolean(this.form.value.delivery)));
+
     if (this.form.value.horarioFuncionamento?.trim()) {
       formData.append('horarioFuncionamento', this.form.value.horarioFuncionamento.trim());
     }
+
+    // Filtra e anexa paradas de itinerário devidamente preenchidas
+    const itinerarioValido = this.itinerario
+      .filter(p => p.local && p.local.trim() && p.horario && p.horario.trim() && p.dias && p.dias.length > 0)
+      .map(p => ({
+        dias: p.dias,
+        local: p.local.trim(),
+        horario: p.horario.trim(),
+        mapsUrl: p.mapsUrl?.trim() || undefined
+      }));
+
+    formData.append('itinerario', JSON.stringify(itinerarioValido));
 
     if (this.fotoFile) {
       formData.append('imagem', this.fotoFile);
     } else if (this.form.value.imagemUrl) {
       formData.append('imagemUrl', this.form.value.imagemUrl);
+    }
+
+    // Se for duplicação (criação herdando galeria da original), envia a lista de fotos existente
+    if (!this.isEdicao && this.galeria && this.galeria.length > 0) {
+      formData.append('galeria', JSON.stringify(this.galeria));
     }
 
     const operacao$ = this.isEdicao && this.lojaId
@@ -254,7 +366,7 @@ export class FormLojaComponent implements OnInit {
         this.salvando = false;
         this.mensagemSucesso = this.isEdicao
           ? 'Loja atualizada com sucesso!'
-          : 'Loja cadastrada com sucesso!';
+          : (this.lojaDuplicadaNome ? `Loja "${this.lojaDuplicadaNome}" duplicada com sucesso para a feira selecionada!` : 'Loja cadastrada com sucesso!');
 
         setTimeout(() => {
           this.router.navigate(['/admin']);

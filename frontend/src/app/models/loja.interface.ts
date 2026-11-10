@@ -5,6 +5,13 @@ export interface IProdutoFoto {
   publicId: string;
 }
 
+export interface IItinerarioParada {
+  dias: number[];
+  local: string;
+  horario: string;
+  mapsUrl?: string;
+}
+
 export interface Loja {
   _id: string;
   nome: string;
@@ -13,6 +20,9 @@ export interface Loja {
   whatsapp: string;
   imagemUrl?: string;
   horarioFuncionamento?: string;
+  instagram?: string;
+  delivery?: boolean;
+  itinerario?: IItinerarioParada[];
   galeria?: IProdutoFoto[];
   diasFuncionamento?: number[];
   feira: Feira;

@@ -108,6 +108,14 @@
         <span>{{ loja.horarioFuncionamento }}</span>
       </span>
       }
+
+      @if (loja.delivery) {
+      <span
+        class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-sky-50 text-sky-800 border border-sky-200 flex items-center gap-1.5">
+        <span aria-hidden="true">🛵</span>
+        <span>Faz Entregas</span>
+      </span>
+      }
     </div>
 
     <!-- Nome e Feira -->
@@ -118,11 +126,88 @@
       }
     </div>
 
+    <!-- Bloco de Itinerário / Múltiplos Locais (Comércio Itinerante) -->
+    @if (loja.itinerario && loja.itinerario.length > 0) {
+    <section class="mt-2 p-4 md:p-5 rounded-2xl bg-slate-900 text-white shadow-md flex flex-col gap-3.5" aria-labelledby="titulo-itinerario">
+      <div class="flex items-center justify-between">
+        <h3 id="titulo-itinerario" class="text-base font-bold text-white flex items-center gap-2">
+          <span aria-hidden="true">🗺️</span>
+          <span>Onde nos Encontrar</span>
+        </h3>
+        <span class="text-[11px] font-semibold bg-slate-800 text-slate-300 px-2.5 py-1 rounded-full border border-slate-700">
+          Comércio Itinerante
+        </span>
+      </div>
+
+      <!-- Card do Ponto de Hoje -->
+      @if (paradaHoje) {
+      <div class="p-3.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-400 uppercase tracking-wider">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true"></span>
+            <span>Hoje ({{ nomesDiasCompletos[diaSemanaAtual] }})</span>
+          </div>
+          <p class="text-sm md:text-base font-bold text-white mt-1">
+            📍 {{ paradaHoje.local }}
+          </p>
+          <p class="text-xs text-emerald-200 mt-0.5 flex items-center gap-1">
+            <span aria-hidden="true">⏰</span>
+            <span>{{ paradaHoje.horario }}</span>
+          </p>
+        </div>
+
+        @if (paradaHoje.mapsUrl) {
+        <a [href]="paradaHoje.mapsUrl" target="_blank" rel="noopener noreferrer"
+          class="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition-all shadow-sm shrink-0 cursor-pointer"
+          [attr.aria-label]="'Abrir localização de hoje no Google Maps para ' + loja.nome">
+          <span>Como Chegar</span>
+          <span aria-hidden="true">↗</span>
+        </a>
+        }
+      </div>
+      } @else {
+      <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700 text-xs text-slate-300">
+        Hoje ({{ nomesDiasCompletos[diaSemanaAtual] }}) não há atendimento presencial programado. Confira a agenda semanal completa abaixo.
+      </div>
+      }
+
+      <!-- Agenda Semanal Completa -->
+      <div class="flex flex-col gap-2">
+        <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+          Cronograma Semanal Completo
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          @for (parada of loja.itinerario; track $index) {
+          <div class="p-3 rounded-xl bg-slate-800/60 border border-slate-700/80 flex flex-col justify-between gap-2 text-xs">
+            <div>
+              <div class="flex items-center justify-between gap-1 text-[11px] text-amber-400 font-bold">
+                <span>{{ formatarDiasItinerario(parada.dias) }}</span>
+                <span class="text-slate-400 font-normal">⏰ {{ parada.horario }}</span>
+              </div>
+              <p class="text-xs text-white font-medium mt-1">
+                📍 {{ parada.local }}
+              </p>
+            </div>
+
+            @if (parada.mapsUrl) {
+            <a [href]="parada.mapsUrl" target="_blank" rel="noopener noreferrer"
+              class="text-[11px] text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-1 cursor-pointer pt-1 border-t border-slate-700/60 transition-colors"
+              [attr.aria-label]="'Ver no Google Maps: ' + parada.local">
+              <span>Ver no Google Maps</span>
+              <span aria-hidden="true">↗</span>
+            </a>
+            }
+          </div>
+          }
+        </div>
+      </div>
+    </section>
+    }
+
     <!-- Sobre a Loja -->
     <div class="mt-2">
       <h3 class="text-base md:text-lg font-bold text-gray-900 mb-2">Sobre a loja</h3>
-      <p class="text-sm md:text-base text-gray-600 leading-relaxed whitespace-pre-line">
-        {{ loja.descricao }}
+      <p class="text-sm md:text-base text-gray-600 leading-relaxed whitespace-pre-line" [innerHTML]="loja.descricao | linkify">
       </p>
     </div>
 
@@ -151,17 +236,26 @@
   </div>
 </section>
 
-<!-- Rodapé com Ação CTA -->
-<footer class="p-4 md:p-6 bg-white border-t border-gray-100 shrink-0">
+<!-- Rodapé com Ações de Contato -->
+<footer class="p-4 md:p-6 bg-white border-t border-gray-100 shrink-0 flex flex-col sm:flex-row gap-3">
+  @if (loja.instagram) {
+  <a [href]="formatarUrlInstagram(loja.instagram)" target="_blank" rel="noopener noreferrer"
+    [attr.aria-label]="'Abrir Instagram de ' + loja.nome"
+    class="flex-1 bg-gradient-to-r from-purple-600 via-pink-600 to-rose-500 hover:opacity-95 text-white font-bold py-3.5 md:py-4 px-6 rounded-2xl flex items-center justify-center gap-2.5 transition-all shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-base md:text-lg cursor-pointer">
+    <span class="text-xl" aria-hidden="true">📸</span>
+    <span>Instagram</span>
+  </a>
+  }
+
   <button (click)="abrirWhatsApp(loja.whatsapp, loja.nome)" [attr.aria-label]="'Falar no WhatsApp com ' + loja.nome"
-    class="w-full bg-[#00B368] hover:bg-[#009e5b] text-white font-bold py-3.5 md:py-4 px-6 rounded-2xl flex items-center
+    class="flex-1 bg-[#00B368] hover:bg-[#009e5b] text-white font-bold py-3.5 md:py-4 px-6 rounded-2xl flex items-center
     justify-center gap-2.5 transition-all shadow-md hover:shadow-lg focus:outline-none focus:ring-2
     focus:ring-emerald-500 text-base md:text-lg cursor-pointer">
     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
       <path
         d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.125-.339-.154-.837-.365-1.503-.981-1.325-1.229-2.158-2.617-2.222-2.704-.064-.087-.528-.703-.528-1.341 0-.638.331-.955.452-1.085.121-.131.261-.164.348-.164.087 0 .174 0 .248.003.078.003.178-.031.278.21.109.261.371.905.405.975.034.07.056.151.013.238-.044.087-.065.141-.131.217-.065.076-.137.164-.196.226-.065.071-.134.148-.052.288.082.141.365.603.778.972.533.475 1.002.628 1.144.698.141.07.226.059.309-.036.082-.095.356-.411.452-.553.095-.141.191-.118.318-.071.126.047.801.376.938.445.137.07.228.105.261.164.033.059.033.344-.111.749z" />
     </svg>
-    Falar no WhatsApp
+    <span>Falar no WhatsApp</span>
   </button>
 </footer>
 }

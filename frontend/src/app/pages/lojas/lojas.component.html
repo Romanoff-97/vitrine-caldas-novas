@@ -109,6 +109,14 @@
               <span>{{ loja.horarioFuncionamento }}</span>
             </span>
             }
+            @if (loja.delivery) {
+            <span class="text-gray-300" aria-hidden="true">•</span>
+            <span
+              class="text-sky-700 font-medium text-xs bg-sky-50 px-2 py-0.5 rounded-md flex items-center gap-1">
+              <span aria-hidden="true">🛵</span>
+              <span>Delivery</span>
+            </span>
+            }
           </p>
         </div>
       </div>

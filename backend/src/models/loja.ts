@@ -6,6 +6,13 @@ export interface IProdutoFoto {
   publicId: string;
 }
 
+export interface IItinerarioParada {
+  dias: number[];
+  local: string;
+  horario: string;
+  mapsUrl?: string;
+}
+
 export interface ILoja extends Document {
   nome: string;
   categoria: string;
@@ -13,6 +20,9 @@ export interface ILoja extends Document {
   whatsapp: string;
   imagemUrl?: string;
   horarioFuncionamento?: string;
+  instagram?: string;
+  delivery?: boolean;
+  itinerario?: IItinerarioParada[];
   galeria?: IProdutoFoto[];
   diasFuncionamento: number[];
   feira: mongoose.Types.ObjectId; // Referência direta (Relacionamento)
@@ -27,6 +37,16 @@ const LojaSchema: Schema = new Schema(
     whatsapp: { type: String, required: true },
     imagemUrl: { type: String, required: false },
     horarioFuncionamento: { type: String, required: false },
+    instagram: { type: String, required: false },
+    delivery: { type: Boolean, default: false },
+    itinerario: [
+      {
+        dias: { type: [Number], required: true },
+        local: { type: String, required: true },
+        horario: { type: String, required: true },
+        mapsUrl: { type: String, required: false }
+      }
+    ],
     galeria: [
       {
         url: { type: String, required: true },
