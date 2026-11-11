@@ -8,6 +8,13 @@ import routes from './routes';
 const app = express();
 
 /**
+ * Habilita a confiança no primeiro proxy reverso (Render, Cloudflare, etc.).
+ * Essencial para ler o cabeçalho X-Forwarded-For e identificar o IP real do cliente,
+ * impedindo que todos os usuários compartilhem a mesma cota de rate limit.
+ */
+app.set('trust proxy', 1);
+
+/**
  * Whitelist de origens autorizadas para consumo da API.
  * Bloqueia acessos não autorizados via navegador (CORS restrito).
  */
@@ -45,11 +52,12 @@ interface RespostaRateLimit {
 
 /**
  * Rate Limiter Global:
- * Limita até 100 requisições a cada 15 minutos por IP.
+ * Limita até 1000 requisições a cada 15 minutos por IP real.
+ * Permite navegação fluida da SPA e operações do painel admin sem bloqueios falsos-positivos.
  */
 const limiterGlobal = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  limit: 100, // Máximo de 100 requisições por IP dentro da janela
+  limit: 1000, // Máximo de 1000 requisições por IP dentro da janela
   standardHeaders: 'draft-7', // Retorna headers RateLimit-*
   legacyHeaders: false, // Desabilita X-RateLimit-* legados
   message: {
