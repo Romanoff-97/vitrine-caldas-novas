@@ -153,399 +153,432 @@
     </div>
 
     <!-- Opção de Delivery / Entregas -->
-    <div class="p-3.5 rounded-xl border border-gray-200 bg-gray-50 flex items-center justify-between gap-3">
-      <div class="flex items-center gap-2.5">
-        <span class="text-xl" aria-hidden="true">🛵</span>
-        <div>
-          <label for="delivery" class="block text-xs font-bold text-gray-800 cursor-pointer">
-            Trabalha com Delivery / Entregas?
-          </label>
-          <p class="text-[11px] text-gray-500">
-            Informa rapidamente aos clientes na vitrine se o estabelecimento faz entregas.
-          </p>
-        </div>
-      </div>
-      <label class="relative inline-flex items-center cursor-pointer" aria-label="Alternar disponibilidade de delivery">
-        <input id="delivery" type="checkbox" formControlName="delivery" class="sr-only peer cursor-pointer" />
-        <div
-          class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600">
-        </div>
-      </label>
-    </div>
+          <div class="p-3.5 rounded-xl border border-gray-200 bg-gray-50 flex flex-col gap-3">
+            <!-- Toggle Principal: Exibir Informação de Entrega -->
+            <div class="flex items-center justify-between gap-3">
+              <div class="flex items-center gap-2.5">
+                <span class="text-xl" aria-hidden="true">📦</span>
+                <div>
+                  <label for="exibirDelivery" class="block text-xs font-bold text-gray-800 cursor-pointer">
+                    Exibir Informação de Entrega / Delivery?
+                  </label>
+                  <p class="text-[11px] text-gray-500">
+                    Ative se for relevante mostrar aos clientes se este comerciante faz ou não entregas.
+                  </p>
+                </div>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer"
+                aria-label="Alternar exibição de informação de delivery">
+                <input id="exibirDelivery" type="checkbox" formControlName="exibirDelivery"
+                  class="sr-only peer cursor-pointer" />
+                <div
+                  class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600">
+                </div>
+              </label>
+            </div>
 
-    <!-- Foto da Loja (Upload direto / Câmera) -->
-    <div>
-      <span class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
-        Foto da Loja (Opcional)
-      </span>
-
-      @if (fotoPreview) {
-      <div class="p-4 rounded-xl border border-gray-200 bg-gray-50 flex items-center justify-between gap-4">
-        <div class="flex items-center gap-3 min-w-0">
-          <img [src]="fotoPreview" alt="Pré-visualização da foto da loja"
-            class="w-16 h-16 rounded-xl object-cover border border-gray-200 shadow-sm shrink-0" />
-          <div class="min-w-0">
-            <p class="text-sm font-semibold text-gray-800 truncate">
-              {{ fotoFile ? fotoFile.name : 'Foto cadastrada' }}
-            </p>
-            <p class="text-xs text-gray-500">
-              {{ fotoFile ? fotoTamanhoFormatado : 'Armazenada no Cloudinary' }}
-            </p>
+                <!-- Toggle Secundário: Disponibilidade da Entrega (Condicional) -->
+                @if (form.get('exibirDelivery')?.value) {
+                <div class="pt-3 border-t border-gray-200/80 flex items-center justify-between gap-3 pl-2">
+                  <div class="flex items-center gap-2.5">
+                    <span class="text-xl" aria-hidden="true">🛵</span>
+                    <div>
+                      <label for="delivery" class="block text-xs font-bold text-gray-800 cursor-pointer">
+                        O comerciante realiza entregas?
+                      </label>
+                      <p class="text-[11px] text-gray-500">
+                        Marcado: exibirá badge <strong>"Faz Entregas"</strong>. Desmarcado: exibirá <strong>"Não Faz
+                          Entregas (Apenas no Local)"</strong>.
+                      </p>
+                    </div>
+                  </div>
+            <label class="relative inline-flex items-center cursor-pointer"
+              aria-label="Alternar disponibilidade de delivery">
+              <input id="delivery" type="checkbox" formControlName="delivery" class="sr-only peer cursor-pointer" />
+              <div
+                class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-600">
+              </div>
+            </label>
           </div>
+          }
         </div>
-        <div class="flex items-center gap-2 shrink-0">
-          <label for="fotoLojaInput"
-            class="cursor-pointer px-3 py-1.5 text-xs font-semibold bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 rounded-lg transition-colors flex items-center gap-1 shadow-sm"
-            role="button" aria-label="Trocar foto da loja">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
-            </svg>
-            <span>Trocar</span>
-          </label>
-          <button type="button" (click)="removerFoto()"
-            class="p-1.5 text-xs font-semibold bg-white border border-red-200 hover:bg-red-50 text-red-600 rounded-lg transition-colors"
-            aria-label="Remover foto selecionada">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-              </path>
-            </svg>
-          </button>
-        </div>
-      </div>
-      } @else {
-      <label for="fotoLojaInput"
-        class="border-2 border-dashed border-gray-200 hover:border-slate-800 rounded-xl p-5 flex flex-col items-center justify-center cursor-pointer transition-colors bg-white hover:bg-slate-50 group"
-        role="button" aria-label="Tirar foto ou escolher imagem da galeria">
-        <div
-          class="w-10 h-10 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center mb-2 group-hover:bg-slate-900 group-hover:text-white transition-colors">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
-            </path>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z">
-            </path>
-          </svg>
-        </div>
-        <p class="text-sm font-semibold text-gray-800 group-hover:text-slate-900">
-          Tirar foto ou escolher da galeria
-        </p>
-        <p class="text-xs text-gray-400 mt-0.5">
-          JPG, PNG, WEBP ou AVIF
-        </p>
-      </label>
-      }
 
-      <input id="fotoLojaInput" type="file" accept="image/*" (change)="onFileSelected($event)" class="sr-only"
-        aria-label="Arquivo de imagem da loja" />
-    </div>
-
-    <!-- Dias de Funcionamento (Vinculados à Feira) -->
-    <div>
-      <div class="flex items-center justify-between mb-1.5">
-        <label class="block text-xs font-bold uppercase tracking-wider text-gray-700">
-          Dias de Funcionamento
-        </label>
-        @if (feiraSelecionada) {
-        <span class="text-[11px] text-slate-500 font-medium">Limitados à feira</span>
-        }
-      </div>
-
-      @if (!feiraSelecionada) {
-      <p class="text-xs text-gray-400 italic py-2">Selecione uma feira para configurar os dias de atendimento.</p>
-      } @else {
-      <div class="grid grid-cols-7 gap-1.5" role="group" aria-label="Dias de atendimento da loja">
-        @for (dia of todosDiasSemana; track $index) {
-        <button type="button" [disabled]="!isDiaPermitidoPelaFeira(dia.valor)" (click)="toggleDia(dia.valor)"
-          [attr.aria-pressed]="isDiaSelecionado(dia.valor)" [attr.aria-label]="dia.label"
-          class="py-2.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center border disabled:opacity-30 disabled:cursor-not-allowed"
-          [class.bg-slate-900]="isDiaSelecionado(dia.valor) && isDiaPermitidoPelaFeira(dia.valor)"
-          [class.text-white]="isDiaSelecionado(dia.valor) && isDiaPermitidoPelaFeira(dia.valor)"
-          [class.border-slate-900]="isDiaSelecionado(dia.valor) && isDiaPermitidoPelaFeira(dia.valor)"
-          [class.bg-gray-50]="!isDiaSelecionado(dia.valor) && isDiaPermitidoPelaFeira(dia.valor)"
-          [class.text-gray-600]="!isDiaSelecionado(dia.valor) && isDiaPermitidoPelaFeira(dia.valor)"
-          [class.border-gray-200]="!isDiaSelecionado(dia.valor) && isDiaPermitidoPelaFeira(dia.valor)"
-          [class.hover:bg-gray-100]="!isDiaSelecionado(dia.valor) && isDiaPermitidoPelaFeira(dia.valor)">
-          {{ dia.label }}
-        </button>
-        }
-      </div>
-      }
-    </div>
-
-    <!-- Horário de Funcionamento (Opcional) -->
-    <div>
-      <div class="flex items-center justify-between mb-1.5">
-        <label for="horarioFuncionamento" class="block text-xs font-bold uppercase tracking-wider text-gray-700">
-          Horário de Funcionamento
-        </label>
-        <span class="text-[11px] text-gray-400 font-medium">Opcional</span>
-      </div>
-      <div class="relative">
-        <span class="absolute left-3.5 top-3.5 text-base" aria-hidden="true">⏰</span>
-        <input id="horarioFuncionamento" type="text" formControlName="horarioFuncionamento"
-          placeholder="Ex: 18:00 às 22:00"
-          class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-slate-800 transition-all text-sm" />
-      </div>
-      <p class="text-[11px] text-gray-500 mt-1">
-        Informe o horário específico em que o feirante atende ao público nesta feira.
-      </p>
-    </div>
-
-    <!-- Gestão de Itinerário Semanal / Múltiplos Locais (Opcional) -->
-    <div class="pt-4 border-t border-gray-200 flex flex-col gap-3">
-      <div class="flex items-center justify-between">
+        <!-- Foto da Loja (Upload direto / Câmera) -->
         <div>
-          <h3 class="text-xs font-bold uppercase tracking-wider text-gray-700 flex items-center gap-1.5">
-            <span aria-hidden="true">🗺️</span>
-            <span>Itinerário Semanal / Múltiplos Pontos (Opcional)</span>
-          </h3>
-          <p class="text-xs text-gray-500 mt-0.5">
-            Ideal para food trucks, bancas itinerantes ou comércios com locais diferentes por dia da semana.
-          </p>
-        </div>
-        <button type="button" (click)="adicionarParadaItinerario()"
-          class="px-3 py-1.5 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors cursor-pointer flex items-center gap-1 shadow-xs"
-          aria-label="Adicionar novo ponto de atendimento">
-          <span aria-hidden="true">+</span>
-          <span>Adicionar Ponto</span>
-        </button>
-      </div>
+          <span class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-1.5">
+            Foto da Loja (Opcional)
+          </span>
 
-      @if (itinerario.length === 0) {
-      <div
-        class="p-4 rounded-xl bg-slate-50 border border-dashed border-slate-200 text-center flex flex-col items-center justify-center gap-2">
-        <p class="text-xs text-slate-500">
-          Nenhum ponto itinerante configurado. Se o negócio muda de lugar ao longo da semana (ex: Terça na Praça, Sexta
-          na Feira), adicione os pontos.
-        </p>
-        <button type="button" (click)="adicionarParadaItinerario()"
-          class="text-xs font-semibold text-emerald-700 hover:text-emerald-800 underline underline-offset-2 cursor-pointer">
-          + Adicionar primeiro local
-        </button>
-      </div>
-      } @else {
-      <div class="flex flex-col gap-3.5">
-        @for (parada of itinerario; track $index; let paradaIdx = $index) {
-        <div class="p-3.5 md:p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col gap-3">
-          <div class="flex items-center justify-between border-b border-slate-200/80 pb-2">
-            <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-              <span
-                class="w-5 h-5 rounded-full bg-slate-800 text-white text-[11px] flex items-center justify-center font-bold">
-                {{ paradaIdx + 1 }}
-              </span>
-              <span>Ponto {{ paradaIdx + 1 }}</span>
-            </span>
-
-            <button type="button" (click)="removerParadaItinerario(paradaIdx)"
-              class="text-rose-600 hover:text-rose-800 text-xs font-semibold flex items-center gap-1 p-1 rounded-md hover:bg-rose-50 transition-colors cursor-pointer"
-              [attr.aria-label]="'Remover ponto ' + (paradaIdx + 1) + ' do itinerário'">
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          @if (fotoPreview) {
+          <div class="p-4 rounded-xl border border-gray-200 bg-gray-50 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 min-w-0">
+              <img [src]="fotoPreview" alt="Pré-visualização da foto da loja"
+                class="w-16 h-16 rounded-xl object-cover border border-gray-200 shadow-sm shrink-0" />
+              <div class="min-w-0">
+                <p class="text-sm font-semibold text-gray-800 truncate">
+                  {{ fotoFile ? fotoFile.name : 'Foto cadastrada' }}
+                </p>
+                <p class="text-xs text-gray-500">
+                  {{ fotoFile ? fotoTamanhoFormatado : 'Armazenada no Cloudinary' }}
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <label for="fotoLojaInput"
+                class="cursor-pointer px-3 py-1.5 text-xs font-semibold bg-white border border-gray-300 hover:bg-gray-100 text-gray-700 rounded-lg transition-colors flex items-center gap-1 shadow-sm"
+                role="button" aria-label="Trocar foto da loja">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                </svg>
+                <span>Trocar</span>
+              </label>
+              <button type="button" (click)="removerFoto()"
+                class="p-1.5 text-xs font-semibold bg-white border border-red-200 hover:bg-red-50 text-red-600 rounded-lg transition-colors"
+                aria-label="Remover foto selecionada">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                  </path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          } @else {
+          <label for="fotoLojaInput"
+            class="border-2 border-dashed border-gray-200 hover:border-slate-800 rounded-xl p-5 flex flex-col items-center justify-center cursor-pointer transition-colors bg-white hover:bg-slate-50 group"
+            role="button" aria-label="Tirar foto ou escolher imagem da galeria">
+            <div
+              class="w-10 h-10 rounded-full bg-slate-100 text-slate-700 flex items-center justify-center mb-2 group-hover:bg-slate-900 group-hover:text-white transition-colors">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                  d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
+                </path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 13a3 3 0 11-6 0 3 3 0 016 0z">
                 </path>
               </svg>
-              <span>Remover</span>
+            </div>
+            <p class="text-sm font-semibold text-gray-800 group-hover:text-slate-900">
+              Tirar foto ou escolher da galeria
+            </p>
+            <p class="text-xs text-gray-400 mt-0.5">
+              JPG, PNG, WEBP ou AVIF
+            </p>
+          </label>
+          }
+
+          <input id="fotoLojaInput" type="file" accept="image/*" (change)="onFileSelected($event)" class="sr-only"
+            aria-label="Arquivo de imagem da loja" />
+        </div>
+
+        <!-- Dias de Funcionamento (Vinculados à Feira) -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="block text-xs font-bold uppercase tracking-wider text-gray-700">
+              Dias de Funcionamento
+            </label>
+            @if (feiraSelecionada) {
+            <span class="text-[11px] text-slate-500 font-medium">Limitados à feira</span>
+            }
+          </div>
+
+          @if (!feiraSelecionada) {
+          <p class="text-xs text-gray-400 italic py-2">Selecione uma feira para configurar os dias de atendimento.</p>
+          } @else {
+          <div class="grid grid-cols-7 gap-1.5" role="group" aria-label="Dias de atendimento da loja">
+            @for (dia of todosDiasSemana; track $index) {
+            <button type="button" [disabled]="!isDiaPermitidoPelaFeira(dia.valor)" (click)="toggleDia(dia.valor)"
+              [attr.aria-pressed]="isDiaSelecionado(dia.valor)" [attr.aria-label]="dia.label"
+              class="py-2.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center border disabled:opacity-30 disabled:cursor-not-allowed"
+              [class.bg-slate-900]="isDiaSelecionado(dia.valor) && isDiaPermitidoPelaFeira(dia.valor)"
+              [class.text-white]="isDiaSelecionado(dia.valor) && isDiaPermitidoPelaFeira(dia.valor)"
+              [class.border-slate-900]="isDiaSelecionado(dia.valor) && isDiaPermitidoPelaFeira(dia.valor)"
+              [class.bg-gray-50]="!isDiaSelecionado(dia.valor) && isDiaPermitidoPelaFeira(dia.valor)"
+              [class.text-gray-600]="!isDiaSelecionado(dia.valor) && isDiaPermitidoPelaFeira(dia.valor)"
+              [class.border-gray-200]="!isDiaSelecionado(dia.valor) && isDiaPermitidoPelaFeira(dia.valor)"
+              [class.hover:bg-gray-100]="!isDiaSelecionado(dia.valor) && isDiaPermitidoPelaFeira(dia.valor)">
+              {{ dia.label }}
+            </button>
+            }
+          </div>
+          }
+        </div>
+
+        <!-- Horário de Funcionamento (Opcional) -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label for="horarioFuncionamento" class="block text-xs font-bold uppercase tracking-wider text-gray-700">
+              Horário de Funcionamento
+            </label>
+            <span class="text-[11px] text-gray-400 font-medium">Opcional</span>
+          </div>
+          <div class="relative">
+            <span class="absolute left-3.5 top-3.5 text-base" aria-hidden="true">⏰</span>
+            <input id="horarioFuncionamento" type="text" formControlName="horarioFuncionamento"
+              placeholder="Ex: 18:00 às 22:00"
+              class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-slate-800 transition-all text-sm" />
+          </div>
+          <p class="text-[11px] text-gray-500 mt-1">
+            Informe o horário específico em que o feirante atende ao público nesta feira.
+          </p>
+        </div>
+
+        <!-- Gestão de Itinerário Semanal / Múltiplos Locais (Opcional) -->
+        <div class="pt-4 border-t border-gray-200 flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-gray-700 flex items-center gap-1.5">
+                <span aria-hidden="true">🗺️</span>
+                <span>Itinerário Semanal / Múltiplos Pontos (Opcional)</span>
+              </h3>
+              <p class="text-xs text-gray-500 mt-0.5">
+                Ideal para food trucks, bancas itinerantes ou comércios com locais diferentes por dia da semana.
+              </p>
+            </div>
+            <button type="button" (click)="adicionarParadaItinerario()"
+              class="px-3 py-1.5 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors cursor-pointer flex items-center gap-1 shadow-xs"
+              aria-label="Adicionar novo ponto de atendimento">
+              <span aria-hidden="true">+</span>
+              <span>Adicionar Ponto</span>
             </button>
           </div>
 
-          <!-- Dias da semana nesta parada -->
-          <div>
-            <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">
-              Dias da semana neste ponto
-            </label>
-            <div class="grid grid-cols-7 gap-1" role="group"
-              [attr.aria-label]="'Dias de atendimento do ponto ' + (paradaIdx + 1)">
-              @for (dia of todosDiasSemana; track $index) {
-              <button type="button" (click)="toggleDiaParada(paradaIdx, dia.valor)"
-                [attr.aria-pressed]="isDiaParadaSelecionado(paradaIdx, dia.valor)"
-                class="py-1.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center border cursor-pointer"
-                [class.bg-slate-900]="isDiaParadaSelecionado(paradaIdx, dia.valor)"
-                [class.text-white]="isDiaParadaSelecionado(paradaIdx, dia.valor)"
-                [class.border-slate-900]="isDiaParadaSelecionado(paradaIdx, dia.valor)"
-                [class.bg-white]="!isDiaParadaSelecionado(paradaIdx, dia.valor)"
-                [class.text-slate-600]="!isDiaParadaSelecionado(paradaIdx, dia.valor)"
-                [class.border-slate-200]="!isDiaParadaSelecionado(paradaIdx, dia.valor)"
-                [class.hover:bg-slate-100]="!isDiaParadaSelecionado(paradaIdx, dia.valor)">
-                {{ dia.label }}
-              </button>
-              }
-            </div>
-          </div>
-
-          <!-- Campos de Localização e Horário do Ponto -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <div>
-              <label [for]="'itinerario-local-' + paradaIdx"
-                class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">
-                Local / Ponto de Referência
-              </label>
-              <input [id]="'itinerario-local-' + paradaIdx" type="text" [(ngModel)]="parada.local"
-                [ngModelOptions]="{standalone: true}" placeholder="Ex: Praça Central - em frente à Matriz"
-                class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-800 text-xs" />
-            </div>
-
-            <div>
-              <label [for]="'itinerario-horario-' + paradaIdx"
-                class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">
-                Horário neste Ponto
-              </label>
-              <input [id]="'itinerario-horario-' + paradaIdx" type="text" [(ngModel)]="parada.horario"
-                [ngModelOptions]="{standalone: true}" placeholder="Ex: 18:00 às 22:00"
-                class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-800 text-xs" />
-            </div>
-          </div>
-
-          <!-- Link do Google Maps -->
-          <div>
-            <label [for]="'itinerario-maps-' + paradaIdx"
-              class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">
-              Link do Google Maps (Opcional)
-            </label>
-            <div class="relative">
-              <span class="absolute left-3 top-2.5 text-xs" aria-hidden="true">📍</span>
-              <input [id]="'itinerario-maps-' + paradaIdx" type="url" [(ngModel)]="parada.mapsUrl"
-                [ngModelOptions]="{standalone: true}" placeholder="Ex: https://maps.app.goo.gl/..."
-                class="w-full pl-8 pr-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-800 text-xs" />
-            </div>
-          </div>
-        </div>
-        }
-      </div>
-      }
-    </div>
-
-    <!-- Gestão da Galeria de Fotos de Produtos -->
-    <div class="pt-4 border-t border-gray-200 flex flex-col gap-3">
-      <div class="flex items-center justify-between">
-        <div>
-          <h3 class="text-xs font-bold uppercase tracking-wider text-gray-700 flex items-center gap-1.5">
-            <span aria-hidden="true">🖼️</span>
-            <span>Galeria de Fotos de Produtos</span>
-          </h3>
-          <p class="text-xs text-gray-500 mt-0.5">
-            Adicione fotos reais dos produtos vendidos para enriquecer a vitrine da loja.
-          </p>
-        </div>
-        @if (isEdicao) {
-        <span
-          class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
-          {{ galeria.length }} foto(s)
-        </span>
-        }
-      </div>
-
-      @if (!isEdicao) {
-      <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex items-center gap-2">
-        <span aria-hidden="true">💡</span>
-        <span>Cadastre e salve a loja primeiro para poder gerenciar as fotos da galeria de produtos.</span>
-      </div>
-      } @else {
-      <!-- Feedback da Galeria -->
-      @if (mensagemGaleriaSucesso) {
-      <div
-        class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2"
-        role="alert">
-        <span aria-hidden="true">✅</span>
-        <span>{{ mensagemGaleriaSucesso }}</span>
-      </div>
-      }
-      @if (mensagemGaleriaErro) {
-      <div class="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2"
-        role="alert">
-        <span aria-hidden="true">⚠️</span>
-        <span>{{ mensagemGaleriaErro }}</span>
-      </div>
-      }
-
-      <!-- Botão de Upload Múltiplo -->
-      <div>
-        <input id="galeriaInput" type="file" multiple accept="image/*" (change)="onGaleriaSelected($event)"
-          class="sr-only" [disabled]="uploadingGaleria || !!removendoFotoPublicId" />
-        <label for="galeriaInput"
-          class="w-full border-2 border-dashed border-gray-300 hover:border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer transition-colors bg-white hover:bg-slate-50 group"
-          [class.cursor-not-allowed]="uploadingGaleria || !!removendoFotoPublicId"
-          [class.opacity-50]="uploadingGaleria || !!removendoFotoPublicId" role="button"
-          aria-label="Adicionar fotos à galeria">
-          @if (uploadingGaleria) {
-          <div class="flex items-center gap-2 text-xs font-semibold text-slate-700">
-            <div class="w-4 h-4 border-2 border-slate-800 border-t-transparent rounded-full animate-spin"></div>
-            <span>Enviando fotos para o Cloudinary...</span>
+          @if (itinerario.length === 0) {
+          <div
+            class="p-4 rounded-xl bg-slate-50 border border-dashed border-slate-200 text-center flex flex-col items-center justify-center gap-2">
+            <p class="text-xs text-slate-500">
+              Nenhum ponto itinerante configurado. Se o negócio muda de lugar ao longo da semana (ex: Terça na Praça,
+              Sexta
+              na Feira), adicione os pontos.
+            </p>
+            <button type="button" (click)="adicionarParadaItinerario()"
+              class="text-xs font-semibold text-emerald-700 hover:text-emerald-800 underline underline-offset-2 cursor-pointer">
+              + Adicionar primeiro local
+            </button>
           </div>
           } @else {
-          <div class="flex items-center gap-2 text-xs font-semibold text-slate-700 group-hover:text-slate-900">
-            <svg class="w-4 h-4 text-slate-600 group-hover:text-slate-900" fill="none" stroke="currentColor"
-              viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-            </svg>
-            <span>Adicionar Fotos à Galeria (Até 6 fotos)</span>
+          <div class="flex flex-col gap-3.5">
+            @for (parada of itinerario; track $index; let paradaIdx = $index) {
+            <div class="p-3.5 md:p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col gap-3">
+              <div class="flex items-center justify-between border-b border-slate-200/80 pb-2">
+                <span class="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                  <span
+                    class="w-5 h-5 rounded-full bg-slate-800 text-white text-[11px] flex items-center justify-center font-bold">
+                    {{ paradaIdx + 1 }}
+                  </span>
+                  <span>Ponto {{ paradaIdx + 1 }}</span>
+                </span>
+
+                <button type="button" (click)="removerParadaItinerario(paradaIdx)"
+                  class="text-rose-600 hover:text-rose-800 text-xs font-semibold flex items-center gap-1 p-1 rounded-md hover:bg-rose-50 transition-colors cursor-pointer"
+                  [attr.aria-label]="'Remover ponto ' + (paradaIdx + 1) + ' do itinerário'">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                    </path>
+                  </svg>
+                  <span>Remover</span>
+                </button>
+              </div>
+
+              <!-- Dias da semana nesta parada -->
+              <div>
+                <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">
+                  Dias da semana neste ponto
+                </label>
+                <div class="grid grid-cols-7 gap-1" role="group"
+                  [attr.aria-label]="'Dias de atendimento do ponto ' + (paradaIdx + 1)">
+                  @for (dia of todosDiasSemana; track $index) {
+                  <button type="button" (click)="toggleDiaParada(paradaIdx, dia.valor)"
+                    [attr.aria-pressed]="isDiaParadaSelecionado(paradaIdx, dia.valor)"
+                    class="py-1.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center border cursor-pointer"
+                    [class.bg-slate-900]="isDiaParadaSelecionado(paradaIdx, dia.valor)"
+                    [class.text-white]="isDiaParadaSelecionado(paradaIdx, dia.valor)"
+                    [class.border-slate-900]="isDiaParadaSelecionado(paradaIdx, dia.valor)"
+                    [class.bg-white]="!isDiaParadaSelecionado(paradaIdx, dia.valor)"
+                    [class.text-slate-600]="!isDiaParadaSelecionado(paradaIdx, dia.valor)"
+                    [class.border-slate-200]="!isDiaParadaSelecionado(paradaIdx, dia.valor)"
+                    [class.hover:bg-slate-100]="!isDiaParadaSelecionado(paradaIdx, dia.valor)">
+                    {{ dia.label }}
+                  </button>
+                  }
+                </div>
+              </div>
+
+              <!-- Campos de Localização e Horário do Ponto -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div>
+                  <label [for]="'itinerario-local-' + paradaIdx"
+                    class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">
+                    Local / Ponto de Referência
+                  </label>
+                  <input [id]="'itinerario-local-' + paradaIdx" type="text" [(ngModel)]="parada.local"
+                    [ngModelOptions]="{standalone: true}" placeholder="Ex: Praça Central - em frente à Matriz"
+                    class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-800 text-xs" />
+                </div>
+
+                <div>
+                  <label [for]="'itinerario-horario-' + paradaIdx"
+                    class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">
+                    Horário neste Ponto
+                  </label>
+                  <input [id]="'itinerario-horario-' + paradaIdx" type="text" [(ngModel)]="parada.horario"
+                    [ngModelOptions]="{standalone: true}" placeholder="Ex: 18:00 às 22:00"
+                    class="w-full px-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-800 text-xs" />
+                </div>
+              </div>
+
+              <!-- Link do Google Maps -->
+              <div>
+                <label [for]="'itinerario-maps-' + paradaIdx"
+                  class="block text-[11px] font-bold uppercase tracking-wider text-slate-700 mb-1">
+                  Link do Google Maps (Opcional)
+                </label>
+                <div class="relative">
+                  <span class="absolute left-3 top-2.5 text-xs" aria-hidden="true">📍</span>
+                  <input [id]="'itinerario-maps-' + paradaIdx" type="url" [(ngModel)]="parada.mapsUrl"
+                    [ngModelOptions]="{standalone: true}" placeholder="Ex: https://maps.app.goo.gl/..."
+                    class="w-full pl-8 pr-3 py-2 rounded-lg border border-slate-200 bg-white text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-800 text-xs" />
+                </div>
+              </div>
+            </div>
+            }
           </div>
-          <p class="text-[11px] text-gray-400 mt-0.5">JPG, PNG, WEBP ou AVIF</p>
           }
-        </label>
-      </div>
+        </div>
 
-      <!-- Grid de Fotos da Galeria -->
-      @if (galeria.length > 0) {
-      <div class="grid grid-cols-3 sm:grid-cols-4 gap-2.5 mt-1" role="region" aria-label="Fotos atuais da galeria">
-        @for (foto of galeria; track $index) {
-        <div
-          class="relative group aspect-square rounded-xl overflow-hidden border border-gray-200 bg-gray-100 shadow-xs">
-          <img [src]="foto.url" alt="Foto do produto na galeria"
-            class="w-full h-full object-cover transition-transform group-hover:scale-105" />
+        <!-- Gestão da Galeria de Fotos de Produtos -->
+        <div class="pt-4 border-t border-gray-200 flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-gray-700 flex items-center gap-1.5">
+                <span aria-hidden="true">🖼️</span>
+                <span>Galeria de Fotos de Produtos</span>
+              </h3>
+              <p class="text-xs text-gray-500 mt-0.5">
+                Adicione fotos reais dos produtos vendidos para enriquecer a vitrine da loja.
+              </p>
+            </div>
+            @if (isEdicao) {
+            <span
+              class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
+              {{ galeria.length }} foto(s)
+            </span>
+            }
+          </div>
 
-          <!-- Botão de Excluir Foto Individual -->
-          <button type="button" (click)="removerFotoGaleria(foto.publicId)"
-            [disabled]="removendoFotoPublicId === foto.publicId || uploadingGaleria"
-            class="absolute top-1.5 right-1.5 p-1.5 rounded-lg bg-red-600/90 hover:bg-red-700 text-white shadow-md transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-red-400"
-            [attr.aria-label]="'Excluir foto ' + ($index + 1) + ' da galeria'">
-            @if (removendoFotoPublicId === foto.publicId) {
-            <div class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          @if (!isEdicao) {
+          <div
+            class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex items-center gap-2">
+            <span aria-hidden="true">💡</span>
+            <span>Cadastre e salve a loja primeiro para poder gerenciar as fotos da galeria de produtos.</span>
+          </div>
+          } @else {
+          <!-- Feedback da Galeria -->
+          @if (mensagemGaleriaSucesso) {
+          <div
+            class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2"
+            role="alert">
+            <span aria-hidden="true">✅</span>
+            <span>{{ mensagemGaleriaSucesso }}</span>
+          </div>
+          }
+          @if (mensagemGaleriaErro) {
+          <div class="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2"
+            role="alert">
+            <span aria-hidden="true">⚠️</span>
+            <span>{{ mensagemGaleriaErro }}</span>
+          </div>
+          }
+
+          <!-- Botão de Upload Múltiplo -->
+          <div>
+            <input id="galeriaInput" type="file" multiple accept="image/*" (change)="onGaleriaSelected($event)"
+              class="sr-only" [disabled]="uploadingGaleria || !!removendoFotoPublicId" />
+            <label for="galeriaInput"
+              class="w-full border-2 border-dashed border-gray-300 hover:border-slate-800 rounded-xl p-4 flex flex-col items-center justify-center cursor-pointer transition-colors bg-white hover:bg-slate-50 group"
+              [class.cursor-not-allowed]="uploadingGaleria || !!removendoFotoPublicId"
+              [class.opacity-50]="uploadingGaleria || !!removendoFotoPublicId" role="button"
+              aria-label="Adicionar fotos à galeria">
+              @if (uploadingGaleria) {
+              <div class="flex items-center gap-2 text-xs font-semibold text-slate-700">
+                <div class="w-4 h-4 border-2 border-slate-800 border-t-transparent rounded-full animate-spin"></div>
+                <span>Enviando fotos para o Cloudinary...</span>
+              </div>
+              } @else {
+              <div class="flex items-center gap-2 text-xs font-semibold text-slate-700 group-hover:text-slate-900">
+                <svg class="w-4 h-4 text-slate-600 group-hover:text-slate-900" fill="none" stroke="currentColor"
+                  viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                <span>Adicionar Fotos à Galeria (Até 6 fotos)</span>
+              </div>
+              <p class="text-[11px] text-gray-400 mt-0.5">JPG, PNG, WEBP ou AVIF</p>
+              }
+            </label>
+          </div>
+
+          <!-- Grid de Fotos da Galeria -->
+          @if (galeria.length > 0) {
+          <div class="grid grid-cols-3 sm:grid-cols-4 gap-2.5 mt-1" role="region" aria-label="Fotos atuais da galeria">
+            @for (foto of galeria; track $index) {
+            <div
+              class="relative group aspect-square rounded-xl overflow-hidden border border-gray-200 bg-gray-100 shadow-xs">
+              <img [src]="foto.url" alt="Foto do produto na galeria"
+                class="w-full h-full object-cover transition-transform group-hover:scale-105" />
+
+              <!-- Botão de Excluir Foto Individual -->
+              <button type="button" (click)="removerFotoGaleria(foto.publicId)"
+                [disabled]="removendoFotoPublicId === foto.publicId || uploadingGaleria"
+                class="absolute top-1.5 right-1.5 p-1.5 rounded-lg bg-red-600/90 hover:bg-red-700 text-white shadow-md transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-red-400"
+                [attr.aria-label]="'Excluir foto ' + ($index + 1) + ' da galeria'">
+                @if (removendoFotoPublicId === foto.publicId) {
+                <div class="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                } @else {
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                  </path>
+                </svg>
+                }
+              </button>
+            </div>
+            }
+          </div>
+          } @else {
+          <p class="text-xs text-gray-400 italic text-center py-3 bg-gray-50 rounded-xl border border-gray-100">
+            Nenhuma foto cadastrada na galeria de produtos.
+          </p>
+          }
+          }
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="flex flex-col sm:flex-row items-center gap-2.5 mt-4">
+          <button type="submit" [disabled]="salvando || excluindo"
+            class="w-full sm:flex-1 bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-700">
+            @if (salvando) {
+            <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            <span>Salvando Loja...</span>
             } @else {
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-              </path>
-            </svg>
+            <span>{{ isEdicao ? 'Salvar Alterações' : 'Salvar Loja' }}</span>
             }
           </button>
+
+          @if (isEdicao) {
+          <button type="button" (click)="abrirModalExclusao()" [disabled]="salvando || excluindo"
+            class="w-full sm:w-auto px-4 py-3.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold rounded-xl border border-rose-200 transition-colors flex items-center justify-center gap-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-400"
+            aria-label="Excluir esta loja">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8"
+              stroke="currentColor" class="w-4 h-4" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+            </svg>
+            <span>Excluir</span>
+          </button>
+          }
         </div>
-        }
-      </div>
-      } @else {
-      <p class="text-xs text-gray-400 italic text-center py-3 bg-gray-50 rounded-xl border border-gray-100">
-        Nenhuma foto cadastrada na galeria de produtos.
-      </p>
-      }
-      }
-    </div>
-
-    <!-- Botões de Ação -->
-    <div class="flex flex-col sm:flex-row items-center gap-2.5 mt-4">
-      <button type="submit" [disabled]="salvando || excluindo"
-        class="w-full sm:flex-1 bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white font-bold py-3.5 px-4 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-700">
-        @if (salvando) {
-        <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-        <span>Salvando Loja...</span>
-        } @else {
-        <span>{{ isEdicao ? 'Salvar Alterações' : 'Salvar Loja' }}</span>
-        }
-      </button>
-
-      @if (isEdicao) {
-      <button type="button" (click)="abrirModalExclusao()" [disabled]="salvando || excluindo"
-        class="w-full sm:w-auto px-4 py-3.5 bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold rounded-xl border border-rose-200 transition-colors flex items-center justify-center gap-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-400"
-        aria-label="Excluir esta loja">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"
-          class="w-4 h-4" aria-hidden="true">
-          <path stroke-linecap="round" stroke-linejoin="round"
-            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-        </svg>
-        <span>Excluir</span>
-      </button>
-      }
-    </div>
   </form>
   }
 </section>

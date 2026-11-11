@@ -64,6 +64,7 @@ export class FormLojaComponent implements OnInit {
     descricao: ['', [Validators.required, Validators.minLength(5)]],
     whatsapp: ['', [Validators.required, Validators.minLength(10)]],
     instagram: [''],
+    exibirDelivery: [false],
     delivery: [false],
     imagemUrl: [''],
     horarioFuncionamento: [''],
@@ -116,6 +117,7 @@ export class FormLojaComponent implements OnInit {
           descricao: loja.descricao,
           whatsapp: loja.whatsapp,
           instagram: loja.instagram ?? '',
+          exibirDelivery: loja.exibirDelivery ?? false,
           delivery: loja.delivery ?? false,
           imagemUrl: loja.imagemUrl ?? '',
           horarioFuncionamento: loja.horarioFuncionamento ?? '',
@@ -125,11 +127,11 @@ export class FormLojaComponent implements OnInit {
         this.galeria = loja.galeria ? [...loja.galeria] : [];
         this.itinerario = loja.itinerario && Array.isArray(loja.itinerario)
           ? loja.itinerario.map(p => ({
-              dias: [...p.dias],
-              local: p.local,
-              horario: p.horario,
-              mapsUrl: p.mapsUrl ?? ''
-            }))
+            dias: [...p.dias],
+            local: p.local,
+            horario: p.horario,
+            mapsUrl: p.mapsUrl ?? ''
+          }))
           : [];
 
         if (loja.imagemUrl) {
@@ -157,6 +159,7 @@ export class FormLojaComponent implements OnInit {
           descricao: loja.descricao,
           whatsapp: loja.whatsapp,
           instagram: loja.instagram ?? '',
+          exibirDelivery: loja.exibirDelivery ?? false,
           delivery: loja.delivery ?? false,
           imagemUrl: loja.imagemUrl ?? '',
           horarioFuncionamento: loja.horarioFuncionamento ?? '',
@@ -166,11 +169,11 @@ export class FormLojaComponent implements OnInit {
         this.galeria = loja.galeria ?? [];
         this.itinerario = loja.itinerario && Array.isArray(loja.itinerario)
           ? loja.itinerario.map(p => ({
-              dias: [...p.dias],
-              local: p.local,
-              horario: p.horario,
-              mapsUrl: p.mapsUrl ?? ''
-            }))
+            dias: [...p.dias],
+            local: p.local,
+            horario: p.horario,
+            mapsUrl: p.mapsUrl ?? ''
+          }))
           : [];
 
         if (loja.imagemUrl) {
@@ -328,6 +331,7 @@ export class FormLojaComponent implements OnInit {
       formData.append('instagram', this.form.value.instagram.trim());
     }
 
+    formData.append('exibirDelivery', String(Boolean(this.form.value.exibirDelivery)));
     formData.append('delivery', String(Boolean(this.form.value.delivery)));
 
     if (this.form.value.horarioFuncionamento?.trim()) {

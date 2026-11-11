@@ -21,6 +21,7 @@ export interface ILoja extends Document {
   imagemUrl?: string;
   horarioFuncionamento?: string;
   instagram?: string;
+  exibirDelivery?: boolean;
   delivery?: boolean;
   itinerario?: IItinerarioParada[];
   galeria?: IProdutoFoto[];
@@ -38,6 +39,7 @@ const LojaSchema: Schema = new Schema(
     imagemUrl: { type: String, required: false },
     horarioFuncionamento: { type: String, required: false },
     instagram: { type: String, required: false },
+    exibirDelivery: { type: Boolean, default: false },
     delivery: { type: Boolean, default: false },
     itinerario: [
       {

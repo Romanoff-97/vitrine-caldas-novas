@@ -21,6 +21,7 @@ export interface Loja {
   imagemUrl?: string;
   horarioFuncionamento?: string;
   instagram?: string;
+  exibirDelivery?: boolean;
   delivery?: boolean;
   itinerario?: IItinerarioParada[];
   galeria?: IProdutoFoto[];

@@ -62,6 +62,10 @@ export class LojaV1Controller {
       }
     }
 
+    const exibirDelivery = req.body?.exibirDelivery !== undefined
+      ? (req.body.exibirDelivery === true || req.body.exibirDelivery === 'true')
+      : undefined;
+
     const delivery = req.body?.delivery !== undefined
       ? (req.body.delivery === true || req.body.delivery === 'true')
       : undefined;
@@ -72,6 +76,7 @@ export class LojaV1Controller {
       ...(diasFuncionamento !== undefined ? { diasFuncionamento } : {}),
       ...(itinerario !== undefined ? { itinerario } : {}),
       ...(galeria !== undefined ? { galeria } : {}),
+      ...(exibirDelivery !== undefined ? { exibirDelivery } : {}),
       ...(delivery !== undefined ? { delivery } : {})
     };
   }

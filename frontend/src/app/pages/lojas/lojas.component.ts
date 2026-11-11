@@ -68,6 +68,16 @@ export class LojasComponent implements OnInit {
     window.open(`https://wa.me/55${numLimpo}?text=${texto}`, '_blank');
   }
 
+  formatarUrlInstagram(instagram?: string): string {
+    if (!instagram) return '';
+    const limpo = instagram.trim();
+    if (limpo.startsWith('http://') || limpo.startsWith('https://')) {
+      return limpo;
+    }
+    const perfil = limpo.startsWith('@') ? limpo.substring(1) : limpo;
+    return `https://instagram.com/${perfil}`;
+  }
+
   isUrlImagem(valor?: string): boolean {
     if (!valor) return false;
     return valor.startsWith('http://') || valor.startsWith('https://') || valor.startsWith('/') || valor.startsWith('data:image');
